@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>iOS-逆向之从砸壳到重签名 | chenXming的个人技术网站</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="一、概述笔者做了多年的业务开发，以前对逆向知之甚少，好像我们做iOS的开发者对应用本身的安全问题总不是那么上心，总以为Apple自身的加密签名机制足够安全了，我们除了关心业务网络安全，对自身App包的安全重视度总是不够。然而一旦我们的包被有心人破解，那么无论是对自身业务还是用户数据都是致命的。真正开始研究逆向，才发现我们App是如此的不堪一击。所以研究逆向其实是研究Hacker是如何攻破我们的应用">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS-逆向之从砸壳到重签名">
+<meta property="og:url" content="https://chenxming.github.io/2021/11/14/iOS%E9%80%86%E5%90%91%E4%B9%8B%E4%BB%8E%E7%A0%B8%E5%A3%B3%E5%88%B0%E9%87%8D%E7%AD%BE%E5%90%8D/index.html">
+<meta property="og:site_name" content="chenXming的个人技术网站">
+<meta property="og:description" content="一、概述笔者做了多年的业务开发，以前对逆向知之甚少，好像我们做iOS的开发者对应用本身的安全问题总不是那么上心，总以为Apple自身的加密签名机制足够安全了，我们除了关心业务网络安全，对自身App包的安全重视度总是不够。然而一旦我们的包被有心人破解，那么无论是对自身业务还是用户数据都是致命的。真正开始研究逆向，才发现我们App是如此的不堪一击。所以研究逆向其实是研究Hacker是如何攻破我们的应用">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i.loli.net/2021/11/16/Fn7jSBbR4AQDvsk.png">
+<meta property="og:image" content="https://i.loli.net/2021/11/16/fgXzYoLWwFBKDsT.png">
+<meta property="og:image" content="https://i.loli.net/2021/11/16/8gV7njrLvoHaOql.png">
+<meta property="og:image" content="https://i.loli.net/2021/11/16/wniqXrAOcyC5ovE.png">
+<meta property="og:image" content="https://i.loli.net/2021/11/16/nzHuATBo6t5CcIG.png">
+<meta property="og:image" content="https://i.loli.net/2021/11/16/nZ6ybLfHYM35gcN.png">
+<meta property="og:image" content="https://i.loli.net/2021/11/16/PGAbWtg8v9ZOmHI.png">
+<meta property="og:image" content="https://i.loli.net/2021/11/16/erThQYGUxa9bfcu.png">
+<meta property="og:image" content="https://i.loli.net/2021/11/16/eTchXtqCyoOEgxK.png">
+<meta property="og:image" content="https://i.loli.net/2021/11/16/WYCEPiMxvwleSr9.png">
+<meta property="og:image" content="https://i.loli.net/2021/11/16/SGFYDK2MEWeOHv5.png">
+<meta property="og:image" content="https://i.loli.net/2021/11/16/O1cVJ9sMx5p4DIy.png">
+<meta property="og:image" content="https://i.loli.net/2021/11/16/buoc65inTJjavSk.png">
+<meta property="og:image" content="https://i.loli.net/2021/11/16/hVz8MxojlmFdYP6.png">
+<meta property="article:published_time" content="2021-11-14T12:46:25.000Z">
+<meta property="article:modified_time" content="2023-08-23T07:12:33.814Z">
+<meta property="article:author" content="chenXming">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2021/11/16/Fn7jSBbR4AQDvsk.png">
+  
+    <link rel="alternate" href="/atom.xml" title="chenXming的个人技术网站" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">chenXming的个人技术网站</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">技术博客</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS 订阅"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="搜索"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="搜索"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://chenxming.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-iOS逆向之从砸壳到重签名" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2021/11/14/iOS%E9%80%86%E5%90%91%E4%B9%8B%E4%BB%8E%E7%A0%B8%E5%A3%B3%E5%88%B0%E9%87%8D%E7%AD%BE%E5%90%8D/" class="article-date">
+  <time class="dt-published" datetime="2021-11-14T12:46:25.000Z" itemprop="datePublished">2021-11-14</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      iOS-逆向之从砸壳到重签名
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h3 id="一、概述"><a href="#一、概述" class="headerlink" title="一、概述"></a>一、概述</h3><p>笔者做了多年的业务开发，以前对逆向知之甚少，好像我们做iOS的开发者对应用本身的安全问题总不是那么上心，总以为Apple自身的加密签名机制足够安全了，我们除了关心业务网络安全，对自身App包的安全重视度总是不够。然而一旦我们的包被有心人破解，那么无论是对自身业务还是用户数据都是致命的。真正开始研究逆向，才发现我们App是如此的不堪一击。所以研究逆向其实是研究<code>Hacker</code>是如何攻破我们的应用，从而更好地保护自身应用安全。</p>
+<p>研究逆向，首当其冲的就是重签名，重签名就是用自己的证书签名别人的应用，从而进行分发。重签名说白了就是套壳别人的应用，挺火的微信双开，其实就是对微信进行了重签名。而重签名首先要做的就是对应用砸壳。</p>
+<h3 id="二、手机越狱与应用砸壳"><a href="#二、手机越狱与应用砸壳" class="headerlink" title="二、手机越狱与应用砸壳"></a>二、手机越狱与应用砸壳</h3><p>我们从App store 下载的应用是经过苹果加密签名过的，是无法进行重签名的。所以重签名首先要做的就是对应用进行砸壳，而砸壳需要你有一台越狱手机。</p>
+<h4 id="1-手机越狱"><a href="#1-手机越狱" class="headerlink" title="1. 手机越狱"></a>1. 手机越狱</h4><p>目前主流的越狱平台有PP助手、爱思助手做到比较好，提供一键越狱功能。我自己使用的爱思助手，下载爱思助手电脑版，选择【工具箱】-【一键越狱】，此时会匹配你当前手机版本的越狱工具，选择工具进行越狱。<br><img src="https://i.loli.net/2021/11/16/Fn7jSBbR4AQDvsk.png" alt="pic"><br>我使用的是 iphone SE，系统版本是14.4，按照提示完成越狱就OK了。</p>
+<blockquote>
+<p>需要注意，这种越狱方式是不完美的越狱，当你重启手机后会重新变回非越狱状态，需要重新走一遍越狱流程。不过对于我们研究逆向足够了。</p>
+</blockquote>
+<p>还没完，越狱完成后需要安装一个插件：<code>Apple File Conduit&quot;2&quot;</code>,安装这个插件的目的是，让我们的电脑端能访问设备的根文件目录，安装方式也很简单，可以参考这篇文章<a target="_blank" rel="noopener" href="https://www.i4.cn/news_detail_1623.html">Apple File Conduit”2”安装</a>，这里不再赘述。当我们安装完成后，爱思助手连接手机，可以看到在【文件管理】中多了个栏目【文件系统(越狱)】，这就是越狱状态下的系统根目录。</p>
+<p><img src="https://i.loli.net/2021/11/16/fgXzYoLWwFBKDsT.png" alt="pic"></p>
+<h4 id="2-ipa应用砸壳"><a href="#2-ipa应用砸壳" class="headerlink" title="2. ipa应用砸壳"></a>2. ipa应用砸壳</h4><p>首先了解什么是应用砸壳：我们提交到App Store发布的App都是经过Apple加密的，这样可以确保安装到我们手机的应用都是苹果审核授权的，当然通过企业级证书或者开发者证书生成的App是不需要砸壳的。对于App Store加密的应用，我们无法通过Hopper等反编译静态分析，也无法class-dump，在逆向分析过程中，需要对加密的二进制文件进行解密才可以进行静态分析，这一过程就是大家熟知的砸壳。<br>砸壳主要有两种方式：</p>
+<ul>
+<li>静态砸壳<br>静态砸壳就是在已经掌握和了解到了壳应用的加密算法和逻辑后,在不运行壳应用程序的前提下将壳应用程序进行解密处理。静态脱壳的方法难度大，而且加密方发现应用被破解后，就可能会改用更加高级和复杂的加密技术。</li>
+<li>动态砸壳<br>动态砸壳就是从运行在进程内存空间中的可执行程序映像(image)入手，来将内存中的内容进行转储(dump)处理来实现脱壳处理。这种方法实现起来相对简单，且不必关心使用的是何种加密技术。所以目前市面上的砸壳工具都是基于动态砸壳进行的。动态砸壳有多种工具：<code>Clutch</code>、<code>dumpdecrypted</code>、<code>CrackerXI App</code>,前两种对系统要求较严格，而且年久失修很容易砸壳失败，我们直接介绍最方便的第三种方式：利用<code>CrackerXI App</code>进行砸壳。</li>
+</ul>
+<h5 id="1-在Cydia中下载CrackerXI-App"><a href="#1-在Cydia中下载CrackerXI-App" class="headerlink" title="(1) 在Cydia中下载CrackerXI App"></a>(1) 在<code>Cydia</code>中下载<code>CrackerXI App</code></h5><p><code>Cydia</code>类似于越狱前的App Store，越狱后我们所有的软件都是通过<code>Cydia</code>来进行安装。打开<code>Cydia</code>后，选择【软件源】-右上角【编辑】-点击【添加】，输入<code>http://apt.wxhbts.com/</code>,【添加源】等待添加完成。添加软件源完成后，搜索<code>CrackerXI App</code>,点击安装完成后【重启springboard】，回到桌面，可以看到桌面上安装完成了<code>CrackerXI+</code>App.</p>
+<p><img src="https://i.loli.net/2021/11/16/8gV7njrLvoHaOql.png" alt="pic"></p>
+<h5 id="2-砸壳"><a href="#2-砸壳" class="headerlink" title="(2) 砸壳"></a>(2) 砸壳</h5><p>提前在App Store 下载好你要砸壳的App，打开<code>CrackerXI+</code>,选择【AppList】然后点击你要砸壳的应用，在弹框中选择【YES，Full IPA】，此时会打开我们要砸壳的应用进行砸壳，完成后会看到一个砸壳后的文件地址<code>/var/mobile/Documents/CrackerXI/*****.ipa</code>,这个文件就是我们砸壳后的ipa包。</p>
+<p><img src="https://i.loli.net/2021/11/16/wniqXrAOcyC5ovE.png" alt="pic"></p>
+<p>这个路径怎么查找相信聪明的你已经知道了，去爱思助手-【文件管理】-【文件系统(越狱)】查找到这个ipa，导出到桌面目录就完成了。</p>
+<p><img src="https://i.loli.net/2021/11/16/nzHuATBo6t5CcIG.png" alt="pic"></p>
+<h4 id="3-验证"><a href="#3-验证" class="headerlink" title="(3) 验证"></a>(3) 验证</h4><p>完成上面的操作后，我们需要验证一下拿到的ipa是否是被砸壳的。把<code>.ipa</code>包扩展名改为<code>.zip</code>,解压后得到<code>Payload</code>文件夹，右键【显示包内容】- 找到可执行文件.</p>
+<p><img src="https://i.loli.net/2021/11/16/nZ6ybLfHYM35gcN.png" alt="pic"></p>
+<p>终端输入</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">otool -l 值执行文件名 | grep crypt</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://i.loli.net/2021/11/16/PGAbWtg8v9ZOmHI.png" alt="pic"></p>
+<p>可以看到<code>cryptid</code>的值为0，说明砸壳成功。</p>
+<h3 id="三、重新签名"><a href="#三、重新签名" class="headerlink" title="三、重新签名"></a>三、重新签名</h3><p>Apple 应用的分发一般有一下几种方式：</p>
+<ul>
+<li>最常用的是从App store下载应用。这种下发方式不受设备数的限制，只要上线App store 的应用，都会被Apple进行签名加密.</li>
+<li>第二种方式是申请企业账号，把我们的应用通过企业账号进行签名，从而绕过App store恼人的审核机制，达到分发应用的目的。这种方法分发数目也不受限制.</li>
+<li>第三种是通过<code>TestFlight</code>进行测试版本的分发，他分为内部测试人员与外部测试人员。通过分发外部测试人员，最多能给1万名用户进行分发安装.</li>
+<li>第四种开发人员通过添加设备ID安装应用，最多可以注册100台设备.</li>
+</ul>
+<p>不同的开发者账号对应着App不同的分发方式，我们申请完成开发者账号后，创建应用Id，然后创建其对应证书，描述文件等一系列动作，实际已经决定了它的分发方式了。可以这样理解：每一个应用Id后面对应一套证书，这套证书决定了你应用的分发方式。重签名就是为当前的应用换一套应用Id与证书，从而达到分发应用的目的。现实的需求是，如果你上线App Store的应用，想通过企业账号的形式进行分发，而你又没有源码，或是想探究一下应用双开，那么重签名就派上用场了。我们介绍两种重签名的方式：</p>
+<h4 id="1-Xcode-重签名"><a href="#1-Xcode-重签名" class="headerlink" title="1.Xcode 重签名"></a>1.Xcode 重签名</h4><h5 id="1-新建同名的工程文件"><a href="#1-新建同名的工程文件" class="headerlink" title="(1) 新建同名的工程文件"></a>(1) 新建同名的工程文件</h5><blockquote>
+<p>注意这里的同名并不是Bundle Identifier 相同，而是跟你砸壳解压ipa文件，Payload里面的包相同的名称</p>
+</blockquote>
+<p>还需要注意，如果你重签名的工程中是通过<code>AppDelegate</code>来监听App的生命周期的话，那么需要在新版的Xcode中移除<code>SceneDelegate</code>这个类,重新使用<code>AppDelegate</code>来监听App的生命周期。重新配置完成工程后，真机运行，把描述文件安装到手机里。</p>
+<p><img src="https://i.loli.net/2021/11/16/erThQYGUxa9bfcu.png" alt="pic"></p>
+<h5 id="2-替换编译的App包"><a href="#2-替换编译的App包" class="headerlink" title="(2) 替换编译的App包"></a>(2) 替换编译的App包</h5><p>找到我们砸壳过的Payload文件夹中包，对我们编译的包进行替换</p>
+<p><img src="https://i.loli.net/2021/11/16/eTchXtqCyoOEgxK.png" alt="pic"></p>
+<h5 id="3-对二进制文件中的FrameWork进行重签名"><a href="#3-对二进制文件中的FrameWork进行重签名" class="headerlink" title="(3) 对二进制文件中的FrameWork进行重签名"></a>(3) 对二进制文件中的FrameWork进行重签名</h5><blockquote>
+<p>其实在这一步之前还需要对包内的<code>PlugIns</code>插件以及<code>Watch</code>相关组件进行删除，我们逆向包里面没有这些组件，所以省略了。</p>
+</blockquote>
+<p>进入Framework 文件夹，利用<code>CodeSign</code>对Framework进行证书签名,注意要对所有FrameWork进行重签名。</p>
+<p><img src="https://i.loli.net/2021/11/16/WYCEPiMxvwleSr9.png" alt="pic"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">codesign -fs &quot;复制的你自己的证书名字&quot; 要重签的FrameWork名称</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>证书的名字就是你真机测试的证书的名称，如果不知道可以去钥匙串中查看</p>
+</blockquote>
+<p><img src="https://i.loli.net/2021/11/16/SGFYDK2MEWeOHv5.png" alt="pic"></p>
+<blockquote>
+<p><code>iPhone Developer: *** ** (********)</code> 就是证书名称</p>
+</blockquote>
+<h5 id="4-重签名后运行"><a href="#4-重签名后运行" class="headerlink" title="(4) 重签名后运行"></a>(4) 重签名后运行</h5><p><img src="https://i.loli.net/2021/11/16/O1cVJ9sMx5p4DIy.png" alt="pic"></p>
+<p>这样我们就在没有源码的情况下，完成了对应用的重签名。</p>
+<h4 id="2-使用脚本文件重签名"><a href="#2-使用脚本文件重签名" class="headerlink" title="2. 使用脚本文件重签名"></a>2. 使用脚本文件重签名</h4><p>利用<code>shell</code>脚本进行重签名的原理，跟上面的签名原理相同，只不过把重签步骤给脚本化了。</p>
+<h5 id="1-创建空工程（工程名随便），并且进行真机运行"><a href="#1-创建空工程（工程名随便），并且进行真机运行" class="headerlink" title="(1) 创建空工程（工程名随便），并且进行真机运行"></a>(1) 创建空工程（工程名随便），并且进行真机运行</h5><h5 id="2-在工程根目录下创建APP文件夹，在文件中放入我们砸壳后的ipa包"><a href="#2-在工程根目录下创建APP文件夹，在文件中放入我们砸壳后的ipa包" class="headerlink" title="(2) 在工程根目录下创建APP文件夹，在文件中放入我们砸壳后的ipa包"></a>(2) 在工程根目录下创建APP文件夹，在文件中放入我们砸壳后的ipa包</h5><p><img src="https://i.loli.net/2021/11/16/buoc65inTJjavSk.png" alt="pic"></p>
+<h5 id="3-在工程中添加脚本"><a href="#3-在工程中添加脚本" class="headerlink" title="(3) 在工程中添加脚本"></a>(3) 在工程中添加脚本</h5><p>在工程<code>Build Phases</code>中新建脚本文件<br><img src="https://i.loli.net/2021/11/16/hVz8MxojlmFdYP6.png" alt="pic"></p>
+<p>在<code>Run Script</code>中添加脚本</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line"># Type a script or drag a script file from your workspace to insert its path.</span><br><span class="line"># Type a script or drag a script file from your workspace to insert its path.</span><br><span class="line"># $&#123;SRCROOT&#125; 为工程文件所在的目录</span><br><span class="line">TEMP_PATH=<span class="string">&quot;$&#123;SRCROOT&#125;/Temp&quot;</span></span><br><span class="line">#资源文件夹,放三方APP的</span><br><span class="line">ASSETS_PATH=<span class="string">&quot;$&#123;SRCROOT&#125;/APP&quot;</span></span><br><span class="line"><span class="meta">#ipa包路径</span></span><br><span class="line">TARGET_IPA_PATH=<span class="string">&quot;$&#123;ASSETS_PATH&#125;/*.ipa&quot;</span></span><br><span class="line"></span><br><span class="line">#新建Temp文件夹</span><br><span class="line">rm -rf <span class="string">&quot;$TEMP_PATH&quot;</span></span><br><span class="line">mkdir -p <span class="string">&quot;$TEMP_PATH&quot;</span></span><br><span class="line"></span><br><span class="line"># --------------------------------------</span><br><span class="line"># <span class="number">1.</span> 解压IPA 到Temp下</span><br><span class="line">unzip -oqq <span class="string">&quot;$TARGET_IPA_PATH&quot;</span> -d <span class="string">&quot;$TEMP_PATH&quot;</span></span><br><span class="line"># 拿到解压的临时APP的路径</span><br><span class="line">TEMP_APP_PATH=$(<span class="built_in">set</span> -- <span class="string">&quot;$TEMP_PATH/Payload/&quot;</span>*.app;echo <span class="string">&quot;$1&quot;</span>)</span><br><span class="line"># 这里显示打印一下 TEMP_APP_PATH变量</span><br><span class="line">echo <span class="string">&quot;TEMP_APP_PATH: $TEMP_APP_PATH&quot;</span></span><br><span class="line"></span><br><span class="line"># -------------------------------------</span><br><span class="line"># <span class="number">2.</span> 把解压出来的.app拷贝进去</span><br><span class="line">#BUILT_PRODUCTS_DIR 工程生成的APP包路径</span><br><span class="line">#TARGET_NAME target名称</span><br><span class="line">TARGET_APP_PATH=<span class="string">&quot;$BUILT_PRODUCTS_DIR/$TARGET_NAME.app&quot;</span></span><br><span class="line">echo <span class="string">&quot;TARGET_APP_PATH: $TARGET_APP_PATH&quot;</span></span><br><span class="line"></span><br><span class="line">rm -rf <span class="string">&quot;$TARGET_APP_PATH&quot;</span></span><br><span class="line">mkdir -p <span class="string">&quot;$TARGET_APP_PATH&quot;</span></span><br><span class="line">cp -rf <span class="string">&quot;$TEMP_APP_PATH/&quot;</span> <span class="string">&quot;$TARGET_APP_PATH/&quot;</span></span><br><span class="line"></span><br><span class="line"># -------------------------------------</span><br><span class="line"># <span class="number">3.</span> 为了是重签过程简化，移走extension和watchAPP. 此外个人免费的证书没办法签extension</span><br><span class="line"></span><br><span class="line">echo <span class="string">&quot;Removing AppExtensions&quot;</span></span><br><span class="line">rm -rf <span class="string">&quot;$TARGET_APP_PATH/PlugIns&quot;</span></span><br><span class="line">rm -rf <span class="string">&quot;$TARGET_APP_PATH/Watch&quot;</span></span><br><span class="line"></span><br><span class="line"># -------------------------------------</span><br><span class="line"># <span class="number">4.</span> 更新 Info.plist 里的BundleId</span><br><span class="line">#  设置 <span class="string">&quot;Set :KEY Value&quot;</span> <span class="string">&quot;目标文件路径.plist&quot;</span></span><br><span class="line">/usr/libexec/PlistBuddy -c <span class="string">&quot;Set :CFBundleIdentifier $PRODUCT_BUNDLE_IDENTIFIER&quot;</span> <span class="string">&quot;$TARGET_APP_PATH/Info.plist&quot;</span></span><br><span class="line"></span><br><span class="line"># <span class="number">5.</span>给可执行文件上权限</span><br><span class="line">#添加ipa二进制的执行权限,否则xcode会告知无法运行</span><br><span class="line">#这个操作是要找到第三方app包里的可执行文件名称，因为info.plist的 <span class="string">&#x27;Executable file&#x27;</span> key对应的是可执行文件的名称</span><br><span class="line">#我们grep 一下,然后取最后一行, 然后以cut 命令分割，取出想要的关键信息。存到APP_BINARY变量里</span><br><span class="line">APP_BINARY=`plutil -convert xml1 -o - $TARGET_APP_PATH/Info.plist|grep -A1 Exec|tail -n1|cut -f2 -d\&gt;|cut -f1 -d\&lt;`</span><br><span class="line"></span><br><span class="line">#这个为二进制文件加上可执行权限 +X</span><br><span class="line">chmod +x <span class="string">&quot;$TARGET_APP_PATH/$APP_BINARY&quot;</span></span><br><span class="line"></span><br><span class="line"># -------------------------------------</span><br><span class="line"># <span class="number">6.</span> 重签第三方app Frameworks下已存在的动态库</span><br><span class="line">TARGET_APP_FRAMEWORKS_PATH=<span class="string">&quot;$TARGET_APP_PATH/Frameworks&quot;</span></span><br><span class="line"><span class="keyword">if</span> [ -d <span class="string">&quot;$TARGET_APP_FRAMEWORKS_PATH&quot;</span> ];</span><br><span class="line">then</span><br><span class="line">#遍历出所有动态库的路径</span><br><span class="line"><span class="keyword">for</span> FRAMEWORK in <span class="string">&quot;$TARGET_APP_FRAMEWORKS_PATH/&quot;</span>*</span><br><span class="line"><span class="keyword">do</span></span><br><span class="line">echo <span class="string">&quot;FRAMEWORK : $FRAMEWORK&quot;</span></span><br><span class="line">#签名</span><br><span class="line">/usr/bin/codesign --force --sign <span class="string">&quot;$EXPANDED_CODE_SIGN_IDENTITY&quot;</span> <span class="string">&quot;$FRAMEWORK&quot;</span></span><br><span class="line">done</span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
+
+<p>运行后完成对其重签名.</p>
+<h3 id="四、总结"><a href="#四、总结" class="headerlink" title="四、总结"></a>四、总结</h3><p>对应用的砸壳和重签名仅仅是逆向的入门，后面我们会继续探讨关于逆向的其他技术。再次声明：研究逆向的目的是为了更好的保护我们的应用，而不是用在非法用途上。</p>
+<p>参考文献：</p>
+<p><a target="_blank" rel="noopener" href="http://blog.cnbang.net/tech/3386/">http://blog.cnbang.net/tech/3386/</a><br><a target="_blank" rel="noopener" href="https://www.i4.cn/news_3.html">https://www.i4.cn/news_3.html</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.i4.cn/news_detail_1623.html">https://www.i4.cn/news_detail_1623.html</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://chenxming.github.io/2021/11/14/iOS%E9%80%86%E5%90%91%E4%B9%8B%E4%BB%8E%E7%A0%B8%E5%A3%B3%E5%88%B0%E9%87%8D%E7%AD%BE%E5%90%8D/" data-id="cllnegp6r0006nyexd69a9k91" data-title="iOS-逆向之从砸壳到重签名" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2022/03/04/WebViewJavascriptBridge%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">前一篇</strong>
+      <div class="article-nav-title">
+        
+          WebViewJavascriptBridge源码解析
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2021/10/20/%E6%B5%85%E8%B0%88UIView%E7%9A%84%E5%88%B7%E6%96%B0%E4%B8%8E%E7%BB%98%E5%88%B6/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">后一篇</strong>
+      <div class="article-nav-title">iOS-浅谈UIView的刷新与绘制</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/05/">五月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">三月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/11/">十一月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/10/">十月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">九月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">八月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">五月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">四月 2021</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2022/05/09/React-Redux%E4%B8%8EVuex%E4%BD%BF%E7%94%A8%E5%AF%B9%E6%AF%94/">Web开发-React-Redux与Vuex使用对比</a>
+          </li>
+        
+          <li>
+            <a href="/2022/03/08/iOS%E4%B8%AD%E7%9A%84Flex%E5%B8%83%E5%B1%80-FlexLib%E7%9A%84%E4%BD%BF%E7%94%A8/">iOS-中的Flex布局-FlexLib的使用</a>
+          </li>
+        
+          <li>
+            <a href="/2022/03/04/WebViewJavascriptBridge%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/">WebViewJavascriptBridge源码解析</a>
+          </li>
+        
+          <li>
+            <a href="/2021/11/14/iOS%E9%80%86%E5%90%91%E4%B9%8B%E4%BB%8E%E7%A0%B8%E5%A3%B3%E5%88%B0%E9%87%8D%E7%AD%BE%E5%90%8D/">iOS-逆向之从砸壳到重签名</a>
+          </li>
+        
+          <li>
+            <a href="/2021/10/20/%E6%B5%85%E8%B0%88UIView%E7%9A%84%E5%88%B7%E6%96%B0%E4%B8%8E%E7%BB%98%E5%88%B6/">iOS-浅谈UIView的刷新与绘制</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2023 chenXming<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>
