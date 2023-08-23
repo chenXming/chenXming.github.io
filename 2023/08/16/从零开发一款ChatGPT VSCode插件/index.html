@@ -4,14 +4,14 @@
   <meta charset="utf-8">
   
   
-  <title>从零开发一款ChatGPT VSCode插件 | chenXming的个人技术网站</title>
+  <title>chenXming的个人技术网站</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="引言OpenAI发布了ChatGPT，就像是给平静许久的互联网湖面上扔了一颗重磅炸弹，刹那间所有人都在追捧学习它。究其原因，它其实是一款真正意义上的人工智能对话机器人。它使用了深度学习技术，通过大量的训练数据和自监督学习方法进行训练，以模拟人类的对话能力和生成自然语言回应。日常生产、学习中利用好ChatGPT这个工具，是绝对能够提升我们工作效率的，这一点对于我们程序员来说，感受应该尤为明显。我们最">
+  <meta name="description" content="从零开发一款ChatGPT VSCode插件引言OpenAI发布了ChatGPT，就像是给平静许久的互联网湖面上扔了一颗重磅炸弹，刹那间所有人都在追捧学习它。究其原因，它其实是一款真正意义上的人工智能对话机器人。它使用了深度学习技术，通过大量的训练数据和自监督学习方法进行训练，以模拟人类的对话能力和生成自然语言回应。日常生产、学习中利用好ChatGPT这个工具，是绝对能够提升我们工作效率的，这一点">
 <meta property="og:type" content="article">
-<meta property="og:title" content="从零开发一款ChatGPT VSCode插件">
-<meta property="og:url" content="https://chenxming.github.io/2023/08/23/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%8F%91%E4%B8%80%E6%AC%BEChatGPT%20VSCode%E6%8F%92%E4%BB%B6/index.html">
+<meta property="og:title" content="chenXming的个人技术网站">
+<meta property="og:url" content="https://chenxming.github.io/2023/08/16/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%8F%91%E4%B8%80%E6%AC%BEChatGPT%20VSCode%E6%8F%92%E4%BB%B6/index.html">
 <meta property="og:site_name" content="chenXming的个人技术网站">
-<meta property="og:description" content="引言OpenAI发布了ChatGPT，就像是给平静许久的互联网湖面上扔了一颗重磅炸弹，刹那间所有人都在追捧学习它。究其原因，它其实是一款真正意义上的人工智能对话机器人。它使用了深度学习技术，通过大量的训练数据和自监督学习方法进行训练，以模拟人类的对话能力和生成自然语言回应。日常生产、学习中利用好ChatGPT这个工具，是绝对能够提升我们工作效率的，这一点对于我们程序员来说，感受应该尤为明显。我们最">
+<meta property="og:description" content="从零开发一款ChatGPT VSCode插件引言OpenAI发布了ChatGPT，就像是给平静许久的互联网湖面上扔了一颗重磅炸弹，刹那间所有人都在追捧学习它。究其原因，它其实是一款真正意义上的人工智能对话机器人。它使用了深度学习技术，通过大量的训练数据和自监督学习方法进行训练，以模拟人类的对话能力和生成自然语言回应。日常生产、学习中利用好ChatGPT这个工具，是绝对能够提升我们工作效率的，这一点">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://s2.loli.net/2023/08/22/u3tXlJBV6APdWp8.png">
 <meta property="og:image" content="https://s2.loli.net/2023/08/22/WFlYrBO7EtDvGQi.png">
@@ -22,8 +22,9 @@
 <meta property="og:image" content="https://s2.loli.net/2023/08/22/H5XpyCLc2J4nru9.png">
 <meta property="og:image" content="https://s2.loli.net/2023/08/22/6I7N5Cb9FMDvTSW.png">
 <meta property="og:image" content="https://s2.loli.net/2023/08/22/gvUY9x1yCM6mTiq.png">
-<meta property="article:published_time" content="2023-08-23T12:46:25.000Z">
-<meta property="article:modified_time" content="2023-08-23T07:38:30.279Z">
+<meta property="og:image" content="https://s2.loli.net/2023/08/23/l7Pwx5TcnYjJrSf.png">
+<meta property="article:published_time" content="2023-08-16T10:31:07.371Z">
+<meta property="article:modified_time" content="2023-08-23T09:03:56.930Z">
 <meta property="article:author" content="chenXming">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://s2.loli.net/2023/08/22/u3tXlJBV6APdWp8.png">
@@ -91,27 +92,17 @@
       <div class="outer">
         <section id="main"><article id="post-从零开发一款ChatGPT VSCode插件" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
-    <a href="/2023/08/23/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%8F%91%E4%B8%80%E6%AC%BEChatGPT%20VSCode%E6%8F%92%E4%BB%B6/" class="article-date">
-  <time class="dt-published" datetime="2023-08-23T12:46:25.000Z" itemprop="datePublished">2023-08-23</time>
+    <a href="/2023/08/16/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%8F%91%E4%B8%80%E6%AC%BEChatGPT%20VSCode%E6%8F%92%E4%BB%B6/" class="article-date">
+  <time class="dt-published" datetime="2023-08-16T10:31:07.371Z" itemprop="datePublished">2023-08-16</time>
 </a>
     
   </div>
   <div class="article-inner">
     
     
-      <header class="article-header">
-        
-  
-    <h1 class="p-name article-title" itemprop="headline name">
-      从零开发一款ChatGPT VSCode插件
-    </h1>
-  
-
-      </header>
-    
     <div class="e-content article-entry" itemprop="articleBody">
       
-        <h4 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h4><p><code>OpenAI</code>发布了<code>ChatGPT</code>，就像是给平静许久的互联网湖面上扔了一颗重磅炸弹，刹那间所有人都在追捧学习它。究其原因，它其实是一款真正意义上的<code>人工智能对话机器人</code>。它使用了深度学习技术，通过大量的训练数据和自监督学习方法进行训练，以模拟人类的对话能力和生成自然语言回应。日常生产、学习中利用好<code>ChatGPT</code>这个工具，是绝对能够提升我们工作效率的，这一点对于我们程序员来说，感受应该尤为明显。我们最常用的开发工具<code>VSCode</code>，已经有许多的插件集成了<code>ChatGPT</code>功能，这篇文章将从零开始，介绍这些插件的实现原理与思路，希望对你有所帮助。</p>
+        <h3 id="从零开发一款ChatGPT-VSCode插件"><a href="#从零开发一款ChatGPT-VSCode插件" class="headerlink" title="从零开发一款ChatGPT VSCode插件"></a>从零开发一款ChatGPT VSCode插件</h3><h4 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h4><p><code>OpenAI</code>发布了<code>ChatGPT</code>，就像是给平静许久的互联网湖面上扔了一颗重磅炸弹，刹那间所有人都在追捧学习它。究其原因，它其实是一款真正意义上的<code>人工智能对话机器人</code>。它使用了深度学习技术，通过大量的训练数据和自监督学习方法进行训练，以模拟人类的对话能力和生成自然语言回应。日常生产、学习中利用好<code>ChatGPT</code>这个工具，是绝对能够提升我们工作效率的，这一点对于我们程序员来说，感受应该尤为明显。我们最常用的开发工具<code>VSCode</code>，已经有许多的插件集成了<code>ChatGPT</code>功能，这篇文章将从零开始，介绍这些插件的实现原理与思路，希望对你有所帮助。</p>
 <h4 id="基本需求"><a href="#基本需求" class="headerlink" title="基本需求"></a>基本需求</h4><p>实现一款可以跟<code>ChatGPT</code>对话的插件，可以通过一问一答的形式来进行对话，并且可以将我们选中的代码发送给<code>ChatGPT</code>，让其可以对代码进行优化。当然如果要访问<code>ChatGPT</code>，首先需要绑定我们在<code>OpenAI</code>后台申请的<code>ApiKey</code>.</p>
 <h4 id="VSCode-插件基本配置"><a href="#VSCode-插件基本配置" class="headerlink" title="VSCode 插件基本配置"></a>VSCode 插件基本配置</h4><p>首先简单介绍一下<code>VSCode</code>插件开发的基本流程</p>
 <ol>
@@ -221,6 +212,9 @@
 </li>
 <li><p>发布后需要等待几分钟应用市场才会更新；</p>
 </li>
+<li><p>当然你可以在插件市场里面搜索<code>chatgpt-for-vscode</code> 来试用这个插件;</p>
+<p><img src="https://s2.loli.net/2023/08/23/l7Pwx5TcnYjJrSf.png" alt="pic"></p>
+</li>
 </ul>
 <h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>以上就是一个<code>ChatGPT</code>插件的基本创建流程，核心是对<code>VSCode API</code>以及<code>ChatGPT API</code>的了解与使用。当然你所需要的功能都可以在对应的官方文档中找到。</p>
 <h4 id="参考文献："><a href="#参考文献：" class="headerlink" title="参考文献："></a>参考文献：</h4><p><a target="_blank" rel="noopener" href="https://code.visualstudio.com/api/extension-guides/overview">https://code.visualstudio.com/api/extension-guides/overview</a><br><a target="_blank" rel="noopener" href="https://platform.openai.com/docs/api-reference/chat/create">https://platform.openai.com/docs/api-reference/chat/create</a><br><a target="_blank" rel="noopener" href="http://blog.haoji.me/vscode-plugin-publish.html">http://blog.haoji.me/vscode-plugin-publish.html</a></p>
@@ -228,7 +222,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://chenxming.github.io/2023/08/23/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%8F%91%E4%B8%80%E6%AC%BEChatGPT%20VSCode%E6%8F%92%E4%BB%B6/" data-id="cllnfb8pa000d3fex2b8u8vfd" data-title="从零开发一款ChatGPT VSCode插件" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      <a data-url="https://chenxming.github.io/2023/08/16/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%8F%91%E4%B8%80%E6%AC%BEChatGPT%20VSCode%E6%8F%92%E4%BB%B6/" data-id="cllniud85000dxbexaqs85str" data-title="" class="article-share-link"><span class="fa fa-share">分享</span></a>
       
       
       
@@ -279,7 +273,7 @@
       <ul>
         
           <li>
-            <a href="/2023/08/23/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%8F%91%E4%B8%80%E6%AC%BEChatGPT%20VSCode%E6%8F%92%E4%BB%B6/">从零开发一款ChatGPT VSCode插件</a>
+            <a href="/2023/08/16/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%8F%91%E4%B8%80%E6%AC%BEChatGPT%20VSCode%E6%8F%92%E4%BB%B6/">(no title)</a>
           </li>
         
           <li>
