@@ -79,6 +79,159 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-iOS中的Flex布局-FlexLib的使用" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2022/03/08/iOS%E4%B8%AD%E7%9A%84Flex%E5%B8%83%E5%B1%80-FlexLib%E7%9A%84%E4%BD%BF%E7%94%A8/" class="article-date">
+  <time class="dt-published" datetime="2022-03-08T12:46:25.000Z" itemprop="datePublished">2022-03-08</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2022/03/08/iOS%E4%B8%AD%E7%9A%84Flex%E5%B8%83%E5%B1%80-FlexLib%E7%9A%84%E4%BD%BF%E7%94%A8/">iOS-中的Flex布局-FlexLib的使用</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h3 id="一-概述"><a href="#一-概述" class="headerlink" title="一. 概述"></a>一. 概述</h3><p>   进行iOS项目开发时，常用的布局方式有两种：<code>Frame</code>布局和<code>AutoLayout</code>，<code>Frame</code>布局没啥可说的，直接设置控件的横纵坐标，并指定宽高。<code>AutoLayout</code>是通过设置控件相对位置的约束进行布局。<code>AutoLayout</code>的本意是好的，但是由于他的语法实在不怎么友好，导致我们在实际项目开发中用的并不多，只能靠<code>Masonry</code>这样的第三方库来使用它。<code>Masonry</code>布局虽然容易理解，但是它的代码量太大，每一个控件都要对其进行block设置。<br>   在前端开发中，Flex布局使用尤为普遍，那么iOS端有没有类似前端Flex布局的方案呢？答案是肯定的，除了在 <code>Weex</code> 以及 <code>React Native</code> 两个著名的跨平台项目里有用到 Flex布局外，<code>AsyncDisplayKit</code> 也同样引入了 Flex布局，它们都是基于 <code>Facebook</code> 的 <code>Yoga</code> 的二次开发。而今天我们要介绍的 <a target="_blank" rel="noopener" href="https://github.com/zhenglibao/FlexLib">FlexLib</a> 同样如此。</p>
+<h3 id="二-Flex布局与相关属性介绍"><a href="#二-Flex布局与相关属性介绍" class="headerlink" title="二. Flex布局与相关属性介绍"></a>二. Flex布局与相关属性介绍</h3><p>先来了解一下Flex布局：<br>Flex布局又叫弹性布局,是一种为一维布局而设计的布局方法。一维的意思是你希望内容是按行或者列来布局。你可以使用<code>display:flex</code>来将元素变为弹性布局。我们直接看例子：<br>实现7个item横向排列<br><img src="https://i.loli.net/2021/07/19/lxgMDecCXfFQ9rY.gif" alt="图片"></p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">title</span>&gt;</span>flex布局2<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">style</span>&gt;</span><span class="language-css"></span></span><br><span class="line"><span class="language-css">            * &#123;</span></span><br><span class="line"><span class="language-css">                <span class="attribute">margin</span>:  <span class="number">0</span>;</span></span><br><span class="line"><span class="language-css">                <span class="attribute">padding</span>: <span class="number">0</span>;</span></span><br><span class="line"><span class="language-css">                <span class="attribute">box-sizing</span>: border-box;</span></span><br><span class="line"><span class="language-css">            &#125;</span></span><br><span class="line"><span class="language-css">            <span class="selector-class">.container</span> &#123;</span></span><br><span class="line"><span class="language-css">                <span class="attribute">display</span>: flex;</span></span><br><span class="line"><span class="language-css">                <span class="attribute">flex-direction</span>: row;</span></span><br><span class="line"><span class="language-css">                <span class="attribute">justify-content</span>: flex-start;</span></span><br><span class="line"><span class="language-css">                <span class="attribute">align-items</span>: flex-end;</span></span><br><span class="line"><span class="language-css">                <span class="attribute">background-color</span>: wheat;</span></span><br><span class="line"><span class="language-css">                <span class="attribute">flex-wrap</span>: wrap;</span></span><br><span class="line"><span class="language-css">            &#125;</span></span><br><span class="line"><span class="language-css">           <span class="selector-class">.item</span> &#123;</span></span><br><span class="line"><span class="language-css">               <span class="attribute">width</span>: <span class="number">100px</span>;</span></span><br><span class="line"><span class="language-css">               <span class="attribute">height</span>: <span class="number">100px</span>;</span></span><br><span class="line"><span class="language-css">               <span class="attribute">border</span>: <span class="number">1px</span> solid royalblue;</span></span><br><span class="line"><span class="language-css">               <span class="attribute">text-align</span>: center;</span></span><br><span class="line"><span class="language-css">               <span class="attribute">line-height</span>: <span class="number">100px</span>;</span></span><br><span class="line"><span class="language-css">               <span class="attribute">margin</span>: <span class="number">10px</span> <span class="number">10px</span>;</span></span><br><span class="line"><span class="language-css">           &#125;</span></span><br><span class="line"><span class="language-css">           <span class="selector-class">.item6</span> &#123;</span></span><br><span class="line"><span class="language-css">               <span class="attribute">flex</span>: <span class="number">1</span>;</span></span><br><span class="line"><span class="language-css">           &#125;</span></span><br><span class="line"><span class="language-css">           <span class="selector-class">.item7</span> &#123;</span></span><br><span class="line"><span class="language-css">               <span class="attribute">flex</span>: <span class="number">2</span>;</span></span><br><span class="line"><span class="language-css">           &#125;</span></span><br><span class="line"><span class="language-css">        </span><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;container&quot;</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;item0 item&quot;</span>&gt;</span>item0<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;item1 item&quot;</span>&gt;</span>item1<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;item2 item&quot;</span>&gt;</span>item2<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;item3 item&quot;</span>&gt;</span>item3<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;item4 item&quot;</span>&gt;</span>item4<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;item5 item&quot;</span>&gt;</span>item5<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;item6 item&quot;</span>&gt;</span>item6<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;item7 item&quot;</span>&gt;</span>item7<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>上面是前端代码，看不懂没关系，这里重点是借这个例子来熟悉一下Flex布局的一些常用属性。Flex属性分类两类：一类是作用在容器上的，另一类是作用在子Item上的。</p>
+<ol>
+<li>作用在容器上的属性</li>
+</ol>
+<ul>
+<li><p><code>display:flex</code>: 设置<code>container</code>容器为弹性布局</p>
+</li>
+<li><p><code>flex-direction</code>:决定主轴的方向,项目横向或是纵向排列<br>取值：row | row-reverse | column | column-reverse;<br><code>row</code>（默认值）：主轴为水平方向，起点在左端。<br><code>row-reverse</code>：主轴为水平方向，起点在右端。<br><code>column</code>：主轴为垂直方向，起点在上沿。<br><code>column-reverse</code>：主轴为垂直方向，起点在下沿。</p>
+</li>
+<li><p><code>justify-content</code>: 定义Item在主轴上如何对齐。<br>取值：flex-start | flex-end | center | space-between | space-around;<br><code>flex-start</code>（默认值）：左对齐<br><code>flex-end</code>：右对齐<br><code>center</code>： 居中<br><code>space-between</code>：两端对齐，项目之间的间隔都相等。<br><code>space-around</code>：每个项目两侧的间隔相等。所以，项目之间的间隔比项目与边框的间隔大一倍。</p>
+</li>
+<li><p><code>align-items</code>:定义Item在交叉轴上如何对齐。<br>取值：align-items: flex-start | flex-end | center;<br><code>flex-start</code>：交叉轴的起点对齐。<br><code>flex-end</code>：交叉轴的终点对齐。<br><code>center</code>：交叉轴的中间点对齐。</p>
+</li>
+<li><p><code>flex-wrap</code>:一条轴线上放不下，决定其是否换行<br>取值: nowrap(不换行) | wrap(换行)</p>
+</li>
+<li><p><code>align-content</code>:也是控制Flex Item 在交叉轴上的对齐方式，只不过是以一整行作为最小单位。注意，如果Flex Item只有一行，该属性不起作用的。调整 <code>flex-wrap</code> 为 Wrap,效果才显示出来。<br>取值：flex-start | flex-end | center | space-between | space-around;</p>
+</li>
+</ul>
+<ol start="2">
+<li>作用在Item上的属性</li>
+</ol>
+<ul>
+<li><p><code>align-self</code>:可以让单个 Flex Item 与其它 Flex Item 有不一样的对齐方式，覆盖 <code>align-items</code>属性。默认值为auto，表示继承Flex容器的<code>align-items</code>属性。</p>
+</li>
+<li><p><code>flex</code> 属性：flex属性是<code>flex-grow</code>, <code>flex-shrink</code> 和 <code>flex-basis</code>的简写，默认值为<code>0 1 auto</code>。<br><code>flex-grow</code>: 属性定义项目的放大比例，默认为0，即如果存在剩余空间也不放大。 取值越大，占用剩余空间越大。<br><code>flex-shrink</code>: 属性定义了项目的缩小比例，默认为1，即如果空间不足，该项目将缩小。<br><code>flex-basis</code>:属性指定了flex元素在主轴方向上的初始大小</p>
+</li>
+</ul>
+<p>这里设置<code>item6</code> 与 <code>item7</code> 的flex为1和2，表示当前轴剩余的空间item6占1&#x2F;3,item7占2&#x2F;3.<br>更多的关于flex的属性可以查看这里：<a target="_blank" rel="noopener" href="http://www.ruanyifeng.com/blog/2015/07/flex-grammar.html">Flex布局</a></p>
+<h3 id="三-FlexLib的使用"><a href="#三-FlexLib的使用" class="headerlink" title="三. FlexLib的使用"></a>三. FlexLib的使用</h3><h4 id="1-使用方式"><a href="#1-使用方式" class="headerlink" title="1.使用方式"></a>1.使用方式</h4><p><code>CocoaPods</code>引入FlexLib:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pod &#x27;FlexLib&#x27;</span><br></pre></td></tr></table></figure>
+<p>使用：</p>
+<ul>
+<li>创建视图控制器继承<code>FlexBaseVC</code>,或者创建视图继承<code>FlexCustomBaseView</code></li>
+<li>创建与视图控制器或视图同名的xml文件</li>
+<li>在xml文件中添加控件进行布局<br>例子：</li>
+</ul>
+<p><img src="https://s2.loli.net/2022/03/08/uPgNjW2eUJYDRor.gif" alt="pic"></p>
+<p>TestLoginVC.h</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">@interface TestLoginVC : FlexBaseVC</span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+<p>TestLoginVC.m</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">#import &quot;TestLoginVC.h&quot;</span><br><span class="line"></span><br><span class="line">@interface TestLoginVC ()</span><br><span class="line">&#123;</span><br><span class="line">    UIScrollView* scroll;//自动绑定name属性的值</span><br><span class="line">    UIView* close;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@implementation TestLoginVC</span><br><span class="line"></span><br><span class="line">- (void)viewDidLoad &#123;</span><br><span class="line">    [super viewDidLoad];</span><br><span class="line">    </span><br><span class="line">    self.navigationItem.title = @&quot;Touch Demo&quot;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)tapTouchAction</span><br><span class="line">&#123;</span><br><span class="line">    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@&quot;&quot;</span><br><span class="line">                                                    message:@&quot;You pressed&quot;</span><br><span class="line">                                                   delegate:nil</span><br><span class="line">                                          cancelButtonTitle:@&quot;Cancel&quot;</span><br><span class="line">                                          otherButtonTitles:@&quot;OK&quot;,nil];</span><br><span class="line">    </span><br><span class="line">    [alert show];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)didReceiveMemoryWarning &#123;</span><br><span class="line">    [super didReceiveMemoryWarning];</span><br><span class="line">&#125;</span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+<p>TestLoginVC.xml</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;utf-8&quot;</span>?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">UIView</span></span></span><br><span class="line"><span class="tag">    <span class="attr">layout</span>=<span class="string">&quot;</span></span></span><br><span class="line"><span class="string"><span class="tag">    flex:1,</span></span></span><br><span class="line"><span class="string"><span class="tag">    alignItems:center&quot;</span></span></span><br><span class="line"><span class="tag">    <span class="attr">attr</span>=<span class="string">&quot;bgColor:white&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">FlexScrollView</span> <span class="attr">name</span>=<span class="string">&quot;scroll&quot;</span>  <span class="attr">layout</span>=<span class="string">&quot;padding:50,flex:1,width:100%,alignItems:center&quot;</span> <span class="attr">attr</span>=<span class="string">&quot;bgColor:white,vertScroll:true,&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">FlexTouchView</span> <span class="attr">onPress</span>=<span class="string">&quot;tapTouchAction&quot;</span> <span class="attr">attr</span>=<span class="string">&quot;underlayColor:blue&quot;</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">UIImageView</span> <span class="attr">layout</span>=<span class="string">&quot;width:100,height:100&quot;</span> <span class="attr">attr</span>=<span class="string">&quot;borderRadius:50,clipsToBounds:true,source:qrcode.png&quot;</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">FlexTouchMaskView</span> <span class="attr">attr</span>=<span class="string">&quot;bgColor:red,alpha:0.7&quot;</span>/&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">UIImageView</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">FlexTouchView</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">UIView</span> <span class="attr">layout</span>=<span class="string">&quot;height:20&quot;</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">FlexTouchView</span> <span class="attr">onPress</span>=<span class="string">&quot;tapTouchAction&quot;</span> <span class="attr">layout</span>=<span class="string">&quot;height:100,width:100%,alignItems:center,justifyContent:center&quot;</span> <span class="attr">attr</span>=<span class="string">&quot;bgColor:#e5e5e5,borderRadius:8,underlayColor:darkGray&quot;</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">UILabel</span> <span class="attr">layout</span>=<span class="string">&quot;width:100%&quot;</span> <span class="attr">attr</span>=<span class="string">&quot;fontSize:16,textAlign:center,color:red,text:Please touch me and move\,\r\n这是测试touch功能的控件,linesNum:0&quot;</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">FlexTouchView</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">UIView</span> <span class="attr">layout</span>=<span class="string">&quot;height:20&quot;</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">UILabel</span> <span class="attr">layout</span>=<span class="string">&quot;width:100%&quot;</span> <span class="attr">attr</span>=<span class="string">&quot;fontSize:20,linesNum:0,color:#333333,text:You can press the buttons above to see the effect. We use FlexTouchView to provide more powerful function and better flexibility than button.&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">FlexScrollView</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">UIView</span>&gt;</span> </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>说明：</p>
+<ul>
+<li><p>默认视图从上到下进行排列，在视图标签内添加其他视图，相当于为视图添加子视图</p>
+</li>
+<li><p><code>FlexLib</code>支持两种类型的属性：布局属性(Layout)和视图属性(attr)，布局属性与<code>yoga</code>所支持的属性一致，视图属性除了文档中所列的属性以外，还可以使用FLEXSET宏对现有属性进行扩展。你可以在这里查看它所支持的 <a target="_blank" rel="noopener" href="https://github.com/zhenglibao/FlexLib/wiki/Layout-Attributes">layout attributes</a> 和 <a target="_blank" rel="noopener" href="https://github.com/zhenglibao/FlexLib/wiki/View-Attributes">view attributes</a></p>
+</li>
+<li><p><code>FlexScrollView</code>(UIScrollView的子类)可以自动管理滚动范围,<code>FlexTouchView</code>类似于UIButton，内置<code>onPress</code>属性，可以设置其触发方法。</p>
+</li>
+<li><p>可以设置控件的<code>name</code>属性，<code>name</code>属性的值会自动绑定代码中具有相同名称的成员变量，你可以直接在代码中使用它。</p>
+</li>
+<li><p>你可以预定义一些属性值，将其放入全局xml文件中，在<code>AppDelegate</code>进行初始化</p>
+</li>
+</ul>
+<p>  全局xml文件 <code>system.style</code> 的格式类似这样：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;utf-8&quot;</span>?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">styles</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">style</span> <span class="attr">name</span>=<span class="string">&quot;buttonAttrStyle&quot;</span>&gt;</span><span class="language-xml"></span></span><br><span class="line"><span class="language-xml">        <span class="tag">&lt;<span class="name">attr</span> <span class="attr">name</span>=<span class="string">&quot;bgColor&quot;</span>&gt;</span>black<span class="tag">&lt;/<span class="name">attr</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">        <span class="tag">&lt;<span class="name">attr</span> <span class="attr">name</span>=<span class="string">&quot;color&quot;</span>&gt;</span>white<span class="tag">&lt;/<span class="name">attr</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">        <span class="tag">&lt;<span class="name">attr</span> <span class="attr">name</span>=<span class="string">&quot;borderRadius&quot;</span>&gt;</span>4<span class="tag">&lt;/<span class="name">attr</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">        <span class="tag">&lt;<span class="name">attr</span> <span class="attr">name</span>=<span class="string">&quot;underlayColor&quot;</span>&gt;</span>darkGray<span class="tag">&lt;/<span class="name">attr</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">        <span class="tag">&lt;<span class="name">attr</span> <span class="attr">name</span>=<span class="string">&quot;shadowColor&quot;</span>&gt;</span>red<span class="tag">&lt;/<span class="name">attr</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">        <span class="tag">&lt;<span class="name">attr</span> <span class="attr">name</span>=<span class="string">&quot;shadowOffset&quot;</span>&gt;</span>5/5<span class="tag">&lt;/<span class="name">attr</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">        <span class="tag">&lt;<span class="name">attr</span> <span class="attr">name</span>=<span class="string">&quot;shadowOpacity&quot;</span>&gt;</span>0.2<span class="tag">&lt;/<span class="name">attr</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">        <span class="tag">&lt;<span class="name">attr</span> <span class="attr">name</span>=<span class="string">&quot;shadowRadius&quot;</span>&gt;</span>3<span class="tag">&lt;/<span class="name">attr</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">    &lt;/style &gt;</span></span><br><span class="line"><span class="language-xml">    <span class="tag">&lt;<span class="name">style</span> <span class="attr">name</span>=<span class="string">&quot;buttonLayoutStyle&quot;</span>&gt;</span><span class="language-xml"></span></span></span><br><span class="line"><span class="language-xml"><span class="language-xml">        <span class="tag">&lt;<span class="name">attr</span> <span class="attr">name</span>=<span class="string">&quot;height&quot;</span>&gt;</span>44<span class="tag">&lt;/<span class="name">attr</span>&gt;</span></span></span></span><br><span class="line"><span class="language-xml"><span class="language-xml">        <span class="tag">&lt;<span class="name">attr</span> <span class="attr">name</span>=<span class="string">&quot;width&quot;</span>&gt;</span>150<span class="tag">&lt;/<span class="name">attr</span>&gt;</span></span></span></span><br><span class="line"><span class="language-xml"><span class="language-xml">        <span class="tag">&lt;<span class="name">attr</span> <span class="attr">name</span>=<span class="string">&quot;alignItems&quot;</span>&gt;</span>center<span class="tag">&lt;/<span class="name">attr</span>&gt;</span></span></span></span><br><span class="line"><span class="language-xml"><span class="language-xml">        <span class="tag">&lt;<span class="name">attr</span> <span class="attr">name</span>=<span class="string">&quot;justifyContent&quot;</span>&gt;</span>center<span class="tag">&lt;/<span class="name">attr</span>&gt;</span></span></span></span><br><span class="line"><span class="language-xml"><span class="language-xml">        <span class="tag">&lt;<span class="name">attr</span> <span class="attr">name</span>=<span class="string">&quot;margin&quot;</span>&gt;</span>20<span class="tag">&lt;/<span class="name">attr</span>&gt;</span></span></span></span><br><span class="line"><span class="language-xml"><span class="language-xml">    </span></span><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">styles</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>导入系统样式文件</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">NSString *path = [[NSBundle mainBundle]pathForResource:@&quot;system&quot; ofType:@&quot;style&quot;];</span><br><span class="line">[[FlexStyleMgr instance] loadClassStyle:path];</span><br></pre></td></tr></table></figure>
+<p>使用:</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">UILabel</span> <span class="attr">attr</span>=<span class="string">&quot;@:system/buttonAttrStyle&quot;</span> <span class="attr">layout</span>=<span class="string">&quot;@:system/buttonLayoutStyle&quot;</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><p><code>FlexLib</code>支持运行时更新界面，具体的配置方式那你可以看<a target="_blank" rel="noopener" href="https://github.com/zhenglibao/FlexLib/wiki/Hot-preview">这里</a></p>
+</li>
+<li><p><code>FlexLib</code>支持Cell高度自动计算，并且适配iPhone X等机型，实际开发中自定义<code>UITableViewCell</code>需要继承<code>FlexBaseTableCell</code>,自定义<code>UICollectionViewCell</code>需要继承<code>FlexCollectionCell</code>。</p>
+</li>
+</ul>
+<h4 id="2-FlexXmlBaseView、FlexFrameView、FlexCustomBaseView-的使用"><a href="#2-FlexXmlBaseView、FlexFrameView、FlexCustomBaseView-的使用" class="headerlink" title="2.FlexXmlBaseView、FlexFrameView、FlexCustomBaseView 的使用"></a>2.FlexXmlBaseView、FlexFrameView、FlexCustomBaseView 的使用</h4><p>在使用<code>xml</code>进行布局时，不可避免的要用到自定义视图，如果自定义视图也想要用xml进行布局，此时需要继承<code>FlexXmlBaseView </code>、<code>FlexFrameView</code>、<code>FlexCustomBaseView</code>这三种视图中的一种。</p>
+<h5 id="1-自定义视图使用xml布局"><a href="#1-自定义视图使用xml布局" class="headerlink" title="(1)自定义视图使用xml布局"></a>(1)自定义视图使用xml布局</h5><ul>
+<li><p>继承<code>FlexXmlBaseView</code>的视图：能在xml文件中使用,可以通过<code>initWithRootView</code>方式创建，但不能通过<code>initWithFrame</code>创建，也不能能直接设置frame，优点是更加轻量级，不会增加额外的视图层级.</p>
+</li>
+<li><p>继承<code>FlexFrameView</code>的视图：可以直接设置frame，但是不能用在xml文件中。例如</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">FlexFrameView *frameView = [[FlexFrameView alloc] initWithFlex:@&quot;CustomFrameView&quot; Frame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 0) Owner:self];</span><br><span class="line">frameView.flexibleHeight = YES;//设置高度自适应</span><br><span class="line">[_scrollView addSubview:frameView];</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><code>CustomFrameView.xml</code>是这个视图对应的xml布局文件</p>
+</blockquote>
+</li>
+<li><p>继承<code>FlexCustomBaseView</code>的视图：既可以用在xml中，也可以像传统的UIView派生类那样使用<code>initWithFrame</code>创建，缺点是会额外的增加多余的视图层级.</p>
+</li>
+</ul>
+<blockquote>
+<p>注意：继承<code>FlexCustomBaseView</code>或<code>FlexFrameView</code>的视图必须要设置以下两个属性</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">//宽和高是否可变？缺省值均为NO</span><br><span class="line">@property(nonatomic,assign) BOOL flexibleWidth;</span><br><span class="line">@property(nonatomic,assign) BOOL flexibleHeight;</span><br></pre></td></tr></table></figure>
+
+<h5 id="2-自定义视图不使用xml布局，但是也想用在xml文件中"><a href="#2-自定义视图不使用xml布局，但是也想用在xml文件中" class="headerlink" title="(2)自定义视图不使用xml布局，但是也想用在xml文件中"></a>(2)自定义视图不使用xml布局，但是也想用在xml文件中</h5><p>此时我们的自定义视图需要满足以下两个条件就可以用于xml文件中：</p>
+<ul>
+<li>所有的初始化必须在<code>init</code>方法中完成。任何其他的<code>init</code>函数，比如<code>initWith…</code>不会被调用。</li>
+<li>你可以用<code>FLEXSET</code>宏扩展视图属性，然后你可以在xml文件中设置属性。</li>
+</ul>
+<p>直接在父视图中使用</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;utf-8&quot;</span>?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">UIView</span> <span class="attr">layout</span>=<span class="string">&quot;flex:1,alignItems:center&quot;</span> <span class="attr">attr</span>=<span class="string">&quot;bgColor:white&quot;</span>&gt;</span></span><br><span class="line">  <span class="comment">&lt;!-- 无xml对应的，自定义View 这么使用 --&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">ComplateCustomView</span> <span class="attr">layout</span>=<span class="string">&quot;width:100%,height:80&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">UIView</span>&gt;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h4 id="3-其他设置"><a href="#3-其他设置" class="headerlink" title="3.其他设置"></a>3.其他设置</h4><ul>
+<li><p>缩放因子<br>在进行页面布局时，如果想让不同尺寸的屏幕共用一套设计，随着屏幕尺寸的变化，页面控件的大小随之缩放，这时候会用到缩放因子。设置缩放因子：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">// 设置缩放因子，使用方法 在xml 布局中 *16 ==&gt; 16*factor + 1</span><br><span class="line">float factor = [UIScreen mainScreen].bounds.size.width/375;</span><br><span class="line">FlexSetScale(factor, 1);</span><br></pre></td></tr></table></figure>
+<p>在布局xml中使用,数字前面加上<code>*</code></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">UILabel</span> <span class="attr">attr</span>=<span class="string">&quot;fontSize: *16&quot;</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+<p>这表示：Label的fontSize为<code>16*factor + 1</code></p>
+</li>
+<li><p>在属性中使用表达式<br>在布局属性和视图属性中添加表达式,属性名前要加<code>$</code>,<code>ScreenWidth</code>是系统预定义的宏，你也可以用自定义的宏。目前支持的运算符<code>+, -, *, /, (, ),</code></p>
+</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">UIView</span> <span class="attr">layout</span>=<span class="string">&quot;$width:ScreenWidth*0.6,height:50,alignItems:center,justifyContent:center&quot;</span> <span class="attr">attr</span>=<span class="string">&quot;bgColor:#e5e5e5,borderRadius:6&quot;</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">UILabel</span> <span class="attr">attr</span>=<span class="string">&quot;@:system/buttonText,text:表达式计算，屏幕宽度的60%&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">UIView</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>FlexTextView<br>它是另外一个系统提供的类，能够自动根据输入的文字调整其高度，且保证其高度不会超出最小(minHeight)和最大高度(maxHeight)。<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">FlexTextView</span> <span class="attr">layout</span>=<span class="string">&quot;flex:1,minHeight:40,maxHeight:95&quot;</span> <span class="attr">attr</span>=<span class="string">&quot;borderColor:red,borderWidth:1,borderRadius:4,fontSize:18,color:darkGray,text:这是一个能自动根据字数调整高度的文本输入框,placeholder:我是占位,placeholderColor:red&quot;</span>/&gt;</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="四-总结"><a href="#四-总结" class="headerlink" title="四. 总结"></a>四. 总结</h3><p><code>FlexLib</code> 可能对有前端开发经验的同学比较友好，对原生开发同学而言，学习一下他的语法也没坏处。在日常开发中，我们可以有选择的使用这个布局，熟悉了这个布局后，会极大的提升我们页面布局效率，从而让我们将精力集中到更加核心的功能上。</p>
+<p>参考：</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/zhenglibao/FlexLib">https://github.com/zhenglibao/FlexLib</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://chenxming.github.io/2022/03/08/iOS%E4%B8%AD%E7%9A%84Flex%E5%B8%83%E5%B1%80-FlexLib%E7%9A%84%E4%BD%BF%E7%94%A8/" data-id="cllnfb8p300043fexdu29369a" data-title="iOS-中的Flex布局-FlexLib的使用" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-WebViewJavascriptBridge源码解析" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/2022/03/04/WebViewJavascriptBridge%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/" class="article-date">
@@ -201,7 +354,7 @@ WebView触发JS的<code>WebViewJavascriptBridge._fetchQueue()</code>,<figure cla
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://chenxming.github.io/2022/03/04/WebViewJavascriptBridge%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/" data-id="cllnf859r000216exd5a42wcm" data-title="WebViewJavascriptBridge源码解析" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      <a data-url="https://chenxming.github.io/2022/03/04/WebViewJavascriptBridge%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/" data-id="cllnfb8p200033fexdjxo56nd" data-title="WebViewJavascriptBridge源码解析" class="article-share-link"><span class="fa fa-share">分享</span></a>
       
       
       
@@ -307,7 +460,7 @@ WebView触发JS的<code>WebViewJavascriptBridge._fetchQueue()</code>,<figure cla
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://chenxming.github.io/2021/11/14/iOS%E9%80%86%E5%90%91%E4%B9%8B%E4%BB%8E%E7%A0%B8%E5%A3%B3%E5%88%B0%E9%87%8D%E7%AD%BE%E5%90%8D/" data-id="cllnf859y000916exe4ds2a9t" data-title="iOS-逆向之从砸壳到重签名" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      <a data-url="https://chenxming.github.io/2021/11/14/iOS%E9%80%86%E5%90%91%E4%B9%8B%E4%BB%8E%E7%A0%B8%E5%A3%B3%E5%88%B0%E9%87%8D%E7%AD%BE%E5%90%8D/" data-id="cllnfb8p600093fexf1mne2qf" data-title="iOS-逆向之从砸壳到重签名" class="article-share-link"><span class="fa fa-share">分享</span></a>
       
       
       
@@ -434,7 +587,7 @@ WebView触发JS的<code>WebViewJavascriptBridge._fetchQueue()</code>,<figure cla
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://chenxming.github.io/2021/10/20/%E6%B5%85%E8%B0%88UIView%E7%9A%84%E5%88%B7%E6%96%B0%E4%B8%8E%E7%BB%98%E5%88%B6/" data-id="cllnf85a4000f16ex7pvv7wvk" data-title="iOS-浅谈UIView的刷新与绘制" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      <a data-url="https://chenxming.github.io/2021/10/20/%E6%B5%85%E8%B0%88UIView%E7%9A%84%E5%88%B7%E6%96%B0%E4%B8%8E%E7%BB%98%E5%88%B6/" data-id="cllnfb8pb000g3fex25ihhm9o" data-title="iOS-浅谈UIView的刷新与绘制" class="article-share-link"><span class="fa fa-share">分享</span></a>
       
       
       
@@ -597,7 +750,7 @@ WebView触发JS的<code>WebViewJavascriptBridge._fetchQueue()</code>,<figure cla
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://chenxming.github.io/2021/09/18/%E4%BB%8E%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%88%B0%E5%89%8D%E7%AB%AF%E5%85%A5%E9%97%A8/" data-id="cllnf85a1000c16ex2qtzhgzx" data-title="从客户端到前端入门总结" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      <a data-url="https://chenxming.github.io/2021/09/18/%E4%BB%8E%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%88%B0%E5%89%8D%E7%AB%AF%E5%85%A5%E9%97%A8/" data-id="cllnfb8p9000c3fexe0lvfqzw" data-title="从客户端到前端入门总结" class="article-share-link"><span class="fa fa-share">分享</span></a>
       
       
       
@@ -788,7 +941,7 @@ WebView触发JS的<code>WebViewJavascriptBridge._fetchQueue()</code>,<figure cla
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://chenxming.github.io/2021/08/13/%E6%B7%B7%E5%90%88%E5%BC%80%E5%8F%91%E5%85%A5%E9%97%A8%20Vue%E7%BB%93%E5%90%88Android:iOS%E5%BC%80%E5%8F%91%E4%BB%BF%E4%BA%AC%E4%B8%9C%E9%A1%B9%E7%9B%AEApp%E5%AD%A6%E4%B9%A0/" data-id="cllnf85aa000h16ex20w8dy4q" data-title="混合开发入门 Vue结合Android/iOS开发仿京东项目App" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      <a data-url="https://chenxming.github.io/2021/08/13/%E6%B7%B7%E5%90%88%E5%BC%80%E5%8F%91%E5%85%A5%E9%97%A8%20Vue%E7%BB%93%E5%90%88Android:iOS%E5%BC%80%E5%8F%91%E4%BB%BF%E4%BA%AC%E4%B8%9C%E9%A1%B9%E7%9B%AEApp%E5%AD%A6%E4%B9%A0/" data-id="cllnfb8pc000i3fex6d6h9uvs" data-title="混合开发入门 Vue结合Android/iOS开发仿京东项目App" class="article-share-link"><span class="fa fa-share">分享</span></a>
       
       
       
@@ -1005,7 +1158,7 @@ CSS<figure class="highlight css"><table><tr><td class="gutter"><pre><span class=
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://chenxming.github.io/2021/08/05/Web%E5%BC%80%E5%8F%91%E5%B8%B8%E7%94%A8%E5%B8%83%E5%B1%80%E6%96%B9%E5%BC%8F%E6%80%BB%E7%BB%93/" data-id="cllnf859u000516ex1e0z7cet" data-title="Web开发常用布局方式总结" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      <a data-url="https://chenxming.github.io/2021/08/05/Web%E5%BC%80%E5%8F%91%E5%B8%B8%E7%94%A8%E5%B8%83%E5%B1%80%E6%96%B9%E5%BC%8F%E6%80%BB%E7%BB%93/" data-id="cllnfb8p300053fex0chz7m18" data-title="Web开发常用布局方式总结" class="article-share-link"><span class="fa fa-share">分享</span></a>
       
       
       
@@ -1110,7 +1263,7 @@ CSS<figure class="highlight css"><table><tr><td class="gutter"><pre><span class=
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://chenxming.github.io/2021/05/17/iOS%E6%9E%B6%E6%9E%84%E6%B5%85%E8%B0%88%E4%BB%8E%20MVC%E3%80%81MVP%20%E5%88%B0%20MVVM/" data-id="cllnf859v000616ex3fwucov1" data-title="iOS-架构浅谈 从 MVC、MVP 到 MVVM" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      <a data-url="https://chenxming.github.io/2021/05/17/iOS%E6%9E%B6%E6%9E%84%E6%B5%85%E8%B0%88%E4%BB%8E%20MVC%E3%80%81MVP%20%E5%88%B0%20MVVM/" data-id="cllnfb8p400063fex3c1kd21c" data-title="iOS-架构浅谈 从 MVC、MVP 到 MVVM" class="article-share-link"><span class="fa fa-share">分享</span></a>
       
       
       
@@ -1320,7 +1473,7 @@ CSS<figure class="highlight css"><table><tr><td class="gutter"><pre><span class=
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://chenxming.github.io/2021/04/25/iOS%E6%BB%A4%E9%95%9C%E9%82%A3%E4%BA%9B%E4%BA%8B%E5%84%BF/" data-id="cllnf859w000716exdaxthvjk" data-title="iOS-滤镜那些事儿" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      <a data-url="https://chenxming.github.io/2021/04/25/iOS%E6%BB%A4%E9%95%9C%E9%82%A3%E4%BA%9B%E4%BA%8B%E5%84%BF/" data-id="cllnfb8p500073fexh52i7wvf" data-title="iOS-滤镜那些事儿" class="article-share-link"><span class="fa fa-share">分享</span></a>
       
       
       
@@ -1355,7 +1508,7 @@ CSS<figure class="highlight css"><table><tr><td class="gutter"><pre><span class=
   <div class="widget-wrap">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/05/">五月 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/04/">四月 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/02/">二月 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/11/">十一月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/09/">九月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/07/">七月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/06/">六月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/05/">五月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">三月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/11/">十一月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/10/">十月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">九月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">八月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">五月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">四月 2021</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/08/">八月 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/05/">五月 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/04/">四月 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/02/">二月 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/11/">十一月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/09/">九月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/07/">七月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/06/">六月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/05/">五月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">三月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/11/">十一月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/10/">十月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">九月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">八月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">五月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">四月 2021</a></li></ul>
     </div>
   </div>
 
@@ -1366,6 +1519,10 @@ CSS<figure class="highlight css"><table><tr><td class="gutter"><pre><span class=
     <h3 class="widget-title">最新文章</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2023/08/23/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%8F%91%E4%B8%80%E6%AC%BEChatGPT%20VSCode%E6%8F%92%E4%BB%B6/">从零开发一款ChatGPT VSCode插件</a>
+          </li>
         
           <li>
             <a href="/2023/05/26/%E6%B5%85%E8%B0%88Vue3%E5%93%8D%E5%BA%94%E5%BC%8F%E5%8E%9F%E7%90%86%E4%B8%8E%E6%BA%90%E7%A0%81%E8%A7%A3%E8%AF%BB/">浅谈Vue3响应式原理与源码解读</a>
@@ -1381,10 +1538,6 @@ CSS<figure class="highlight css"><table><tr><td class="gutter"><pre><span class=
         
           <li>
             <a href="/2022/11/15/GitHub%20Actions%20%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2%E5%89%8D%E7%AB%AF%20Vue%20%E9%A1%B9%E7%9B%AE/">GitHub Actions 自动部署前端 Vue 项目</a>
-          </li>
-        
-          <li>
-            <a href="/2022/09/15/Vue3.2%E8%AF%AD%E6%B3%95%E7%B3%96%E4%BD%BF%E7%94%A8%E6%80%BB%E7%BB%93/">Vue3.2语法糖使用总结</a>
           </li>
         
       </ul>
