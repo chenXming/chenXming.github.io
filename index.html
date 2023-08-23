@@ -9,17 +9,17 @@
   <meta name="description" content="我的个人技术博客，如果有需要可以通过13716873821@163.com联系我">
 <meta property="og:type" content="website">
 <meta property="og:title" content="chenXming的个人技术网站">
-<meta property="og:url" content="http://example.com/index.html">
+<meta property="og:url" content="https://github.com/chenXming/chenXming.github.io/index.html">
 <meta property="og:site_name" content="chenXming的个人技术网站">
 <meta property="og:description" content="我的个人技术博客，如果有需要可以通过13716873821@163.com联系我">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:author" content="chenXming">
 <meta name="twitter:card" content="summary">
   
-    <link rel="alternate" href="/atom.xml" title="chenXming的个人技术网站" type="application/atom+xml">
+    <link rel="alternate" href="/chenXming/chenXming.github.io/atom.xml" title="chenXming的个人技术网站" type="application/atom+xml">
   
   
-    <link rel="shortcut icon" href="/favicon.png">
+    <link rel="shortcut icon" href="/chenXming/chenXming.github.io/favicon.png">
   
   
     
@@ -27,11 +27,11 @@
 
   
   
-<link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="/chenXming/chenXming.github.io/css/style.css">
 
   
     
-<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+<link rel="stylesheet" href="/chenXming/chenXming.github.io/fancybox/jquery.fancybox.min.css">
 
   
   
@@ -45,11 +45,11 @@
   <div id="header-outer" class="outer">
     <div id="header-title" class="inner">
       <h1 id="logo-wrap">
-        <a href="/" id="logo">chenXming的个人技术网站</a>
+        <a href="/chenXming/chenXming.github.io/" id="logo">chenXming的个人技术网站</a>
       </h1>
       
         <h2 id="subtitle-wrap">
-          <a href="/" id="subtitle">技术博客</a>
+          <a href="/chenXming/chenXming.github.io/" id="subtitle">技术博客</a>
         </h2>
       
     </div>
@@ -57,20 +57,20 @@
       <nav id="main-nav">
         <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
         
-          <a class="main-nav-link" href="/">Home</a>
+          <a class="main-nav-link" href="/chenXming/chenXming.github.io/">Home</a>
         
-          <a class="main-nav-link" href="/archives">Archives</a>
+          <a class="main-nav-link" href="/chenXming/chenXming.github.io/archives">Archives</a>
         
       </nav>
       <nav id="sub-nav">
         
         
-          <a class="nav-icon" href="/atom.xml" title="RSS 订阅"><span class="fa fa-rss"></span></a>
+          <a class="nav-icon" href="/chenXming/chenXming.github.io/atom.xml" title="RSS 订阅"><span class="fa fa-rss"></span></a>
         
         <a class="nav-icon nav-search-btn" title="搜索"><span class="fa fa-search"></span></a>
       </nav>
       <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="搜索"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="搜索"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://github.com/chenXming/chenXming.github.io"></form>
       </div>
     </div>
   </div>
@@ -81,7 +81,7 @@
   
     <article id="post-浅谈UIView的刷新与绘制" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
-    <a href="/2021/10/20/%E6%B5%85%E8%B0%88UIView%E7%9A%84%E5%88%B7%E6%96%B0%E4%B8%8E%E7%BB%98%E5%88%B6/" class="article-date">
+    <a href="/chenXming/chenXming.github.io/2021/10/20/%E6%B5%85%E8%B0%88UIView%E7%9A%84%E5%88%B7%E6%96%B0%E4%B8%8E%E7%BB%98%E5%88%B6/" class="article-date">
   <time class="dt-published" datetime="2021-10-20T12:46:25.000Z" itemprop="datePublished">2021-10-20</time>
 </a>
     
@@ -93,7 +93,7 @@
         
   
     <h1 itemprop="name">
-      <a class="p-name article-title" href="/2021/10/20/%E6%B5%85%E8%B0%88UIView%E7%9A%84%E5%88%B7%E6%96%B0%E4%B8%8E%E7%BB%98%E5%88%B6/">iOS-浅谈UIView的刷新与绘制</a>
+      <a class="p-name article-title" href="/chenXming/chenXming.github.io/2021/10/20/%E6%B5%85%E8%B0%88UIView%E7%9A%84%E5%88%B7%E6%96%B0%E4%B8%8E%E7%BB%98%E5%88%B6/">iOS-浅谈UIView的刷新与绘制</a>
     </h1>
   
 
@@ -187,14 +187,14 @@
 <li>完成绘制后生成Image图片</li>
 <li>最后回到主线程，把Image图片赋值给layer的contents属性。</li>
 </ul>
-<p>当然我们在日常开发中还要考虑线程的管理与绘制时机等问题，使用第三方库<code>YYAsyncLayer</code>可以让我们把注意力放在具体的绘制上,具体的使用流程可以点<a target="_blank" rel="noopener" href="https://github.com/ibireme/YYAsyncLayer">这里</a>去查看.</p>
-<h3 id="四-总结"><a href="#四-总结" class="headerlink" title="四.总结"></a>四.总结</h3><p>我们知道，当我们实现了<code>CALayerDelegate</code>协议中的<code>-drawLayer:inContext:</code>方法或者UIView中的<code>-drawRect:</code>方法，图层就创建了一个绘制上下文，这个上下文需要的大小的内存可从这个算式得出：图层宽X图层高X4字节，宽高的单位均为像素。对于一个在Retina iPad上的全屏图层来说，这个内存量就是 2048X15264字节，相当于12MB内存，图层每次重绘的时候都需要重新抹掉内存然后重新分配。可见使用<code>Core Graphics</code>利用CPU进行绘制代价是很高的，那么如何进行高效的绘图呢？<a target="_blank" rel="noopener" href="https://github.com/qunten/iOS-Core-Animation-Advanced-Techniques">iOS-Core-Animation-Advanced-Techniques</a>给出了答案，我们在日常开发中完全可以使用<code>Core Animation</code>的<code>CAShapeLayer</code>代替<code>Core Graphics</code>进行图形的绘制，具体的方法这里就不介绍了，感兴趣的可以自行去查看。</p>
-<p>参考引用：<br><a target="_blank" rel="noopener" href="https://github.com/qunten/iOS-Core-Animation-Advanced-Techniques">iOS-Core-Animation-Advanced-Techniques</a><br><a target="_blank" rel="noopener" href="https://github.com/ibireme/YYAsyncLayer">YYAsyncLayer</a><br><a target="_blank" rel="noopener" href="https://juejin.cn/post/6844903567610871816">https://juejin.cn/post/6844903567610871816</a></p>
+<p>当然我们在日常开发中还要考虑线程的管理与绘制时机等问题，使用第三方库<code>YYAsyncLayer</code>可以让我们把注意力放在具体的绘制上,具体的使用流程可以点<a href="https://github.com/ibireme/YYAsyncLayer">这里</a>去查看.</p>
+<h3 id="四-总结"><a href="#四-总结" class="headerlink" title="四.总结"></a>四.总结</h3><p>我们知道，当我们实现了<code>CALayerDelegate</code>协议中的<code>-drawLayer:inContext:</code>方法或者UIView中的<code>-drawRect:</code>方法，图层就创建了一个绘制上下文，这个上下文需要的大小的内存可从这个算式得出：图层宽X图层高X4字节，宽高的单位均为像素。对于一个在Retina iPad上的全屏图层来说，这个内存量就是 2048X15264字节，相当于12MB内存，图层每次重绘的时候都需要重新抹掉内存然后重新分配。可见使用<code>Core Graphics</code>利用CPU进行绘制代价是很高的，那么如何进行高效的绘图呢？<a href="https://github.com/qunten/iOS-Core-Animation-Advanced-Techniques">iOS-Core-Animation-Advanced-Techniques</a>给出了答案，我们在日常开发中完全可以使用<code>Core Animation</code>的<code>CAShapeLayer</code>代替<code>Core Graphics</code>进行图形的绘制，具体的方法这里就不介绍了，感兴趣的可以自行去查看。</p>
+<p>参考引用：<br><a href="https://github.com/qunten/iOS-Core-Animation-Advanced-Techniques">iOS-Core-Animation-Advanced-Techniques</a><br><a href="https://github.com/ibireme/YYAsyncLayer">YYAsyncLayer</a><br><a target="_blank" rel="noopener" href="https://juejin.cn/post/6844903567610871816">https://juejin.cn/post/6844903567610871816</a></p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2021/10/20/%E6%B5%85%E8%B0%88UIView%E7%9A%84%E5%88%B7%E6%96%B0%E4%B8%8E%E7%BB%98%E5%88%B6/" data-id="cllndjawu000340exht8wbbef" data-title="iOS-浅谈UIView的刷新与绘制" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      <a data-url="https://github.com/chenXming/chenXming.github.io/2021/10/20/%E6%B5%85%E8%B0%88UIView%E7%9A%84%E5%88%B7%E6%96%B0%E4%B8%8E%E7%BB%98%E5%88%B6/" data-id="cllndzcw80003b8exbws4d9sa" data-title="iOS-浅谈UIView的刷新与绘制" class="article-share-link"><span class="fa fa-share">分享</span></a>
       
       
       
@@ -208,7 +208,7 @@
   
     <article id="post-混合开发入门 Vue结合Android:iOS开发仿京东项目App学习" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
-    <a href="/2021/08/13/%E6%B7%B7%E5%90%88%E5%BC%80%E5%8F%91%E5%85%A5%E9%97%A8%20Vue%E7%BB%93%E5%90%88Android:iOS%E5%BC%80%E5%8F%91%E4%BB%BF%E4%BA%AC%E4%B8%9C%E9%A1%B9%E7%9B%AEApp%E5%AD%A6%E4%B9%A0/" class="article-date">
+    <a href="/chenXming/chenXming.github.io/2021/08/13/%E6%B7%B7%E5%90%88%E5%BC%80%E5%8F%91%E5%85%A5%E9%97%A8%20Vue%E7%BB%93%E5%90%88Android:iOS%E5%BC%80%E5%8F%91%E4%BB%BF%E4%BA%AC%E4%B8%9C%E9%A1%B9%E7%9B%AEApp%E5%AD%A6%E4%B9%A0/" class="article-date">
   <time class="dt-published" datetime="2021-08-13T12:46:25.000Z" itemprop="datePublished">2021-08-13</time>
 </a>
     
@@ -220,7 +220,7 @@
         
   
     <h1 itemprop="name">
-      <a class="p-name article-title" href="/2021/08/13/%E6%B7%B7%E5%90%88%E5%BC%80%E5%8F%91%E5%85%A5%E9%97%A8%20Vue%E7%BB%93%E5%90%88Android:iOS%E5%BC%80%E5%8F%91%E4%BB%BF%E4%BA%AC%E4%B8%9C%E9%A1%B9%E7%9B%AEApp%E5%AD%A6%E4%B9%A0/">混合开发入门 Vue结合Android/iOS开发仿京东项目App</a>
+      <a class="p-name article-title" href="/chenXming/chenXming.github.io/2021/08/13/%E6%B7%B7%E5%90%88%E5%BC%80%E5%8F%91%E5%85%A5%E9%97%A8%20Vue%E7%BB%93%E5%90%88Android:iOS%E5%BC%80%E5%8F%91%E4%BB%BF%E4%BA%AC%E4%B8%9C%E9%A1%B9%E7%9B%AEApp%E5%AD%A6%E4%B9%A0/">混合开发入门 Vue结合Android/iOS开发仿京东项目App</a>
     </h1>
   
 
@@ -385,7 +385,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2021/08/13/%E6%B7%B7%E5%90%88%E5%BC%80%E5%8F%91%E5%85%A5%E9%97%A8%20Vue%E7%BB%93%E5%90%88Android:iOS%E5%BC%80%E5%8F%91%E4%BB%BF%E4%BA%AC%E4%B8%9C%E9%A1%B9%E7%9B%AEApp%E5%AD%A6%E4%B9%A0/" data-id="cllndjawv000440exeajk7msd" data-title="混合开发入门 Vue结合Android/iOS开发仿京东项目App" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      <a data-url="https://github.com/chenXming/chenXming.github.io/2021/08/13/%E6%B7%B7%E5%90%88%E5%BC%80%E5%8F%91%E5%85%A5%E9%97%A8%20Vue%E7%BB%93%E5%90%88Android:iOS%E5%BC%80%E5%8F%91%E4%BB%BF%E4%BA%AC%E4%B8%9C%E9%A1%B9%E7%9B%AEApp%E5%AD%A6%E4%B9%A0/" data-id="cllndzcw90004b8ex21txdket" data-title="混合开发入门 Vue结合Android/iOS开发仿京东项目App" class="article-share-link"><span class="fa fa-share">分享</span></a>
       
       
       
@@ -399,7 +399,7 @@
   
     <article id="post-Web开发常用布局方式总结" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
-    <a href="/2021/08/05/Web%E5%BC%80%E5%8F%91%E5%B8%B8%E7%94%A8%E5%B8%83%E5%B1%80%E6%96%B9%E5%BC%8F%E6%80%BB%E7%BB%93/" class="article-date">
+    <a href="/chenXming/chenXming.github.io/2021/08/05/Web%E5%BC%80%E5%8F%91%E5%B8%B8%E7%94%A8%E5%B8%83%E5%B1%80%E6%96%B9%E5%BC%8F%E6%80%BB%E7%BB%93/" class="article-date">
   <time class="dt-published" datetime="2021-08-05T12:46:25.000Z" itemprop="datePublished">2021-08-05</time>
 </a>
     
@@ -411,7 +411,7 @@
         
   
     <h1 itemprop="name">
-      <a class="p-name article-title" href="/2021/08/05/Web%E5%BC%80%E5%8F%91%E5%B8%B8%E7%94%A8%E5%B8%83%E5%B1%80%E6%96%B9%E5%BC%8F%E6%80%BB%E7%BB%93/">Web开发常用布局方式总结</a>
+      <a class="p-name article-title" href="/chenXming/chenXming.github.io/2021/08/05/Web%E5%BC%80%E5%8F%91%E5%B8%B8%E7%94%A8%E5%B8%83%E5%B1%80%E6%96%B9%E5%BC%8F%E6%80%BB%E7%BB%93/">Web开发常用布局方式总结</a>
     </h1>
   
 
@@ -597,12 +597,12 @@ CSS<figure class="highlight css"><table><tr><td class="gutter"><pre><span class=
 <p>例子：</p>
 <figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!doctype <span class="keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;zh-CN&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 必须的 meta 标签 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;utf-8&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">&quot;viewport&quot;</span> <span class="attr">content</span>=<span class="string">&quot;width=device-width, initial-scale=1&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>Bootstrap<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- Bootstrap 的 CSS 文件 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">link</span> <span class="attr">href</span>=<span class="string">&quot;https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css&quot;</span> <span class="attr">rel</span>=<span class="string">&quot;stylesheet&quot;</span> <span class="attr">integrity</span>=<span class="string">&quot;sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC&quot;</span> <span class="attr">crossorigin</span>=<span class="string">&quot;anonymous&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">style</span>&gt;</span><span class="language-css"></span></span><br><span class="line"><span class="language-css">        <span class="selector-class">.item</span> &#123;</span></span><br><span class="line"><span class="language-css">            <span class="attribute">height</span>: <span class="number">50px</span>;</span></span><br><span class="line"><span class="language-css">        &#125;</span></span><br><span class="line"><span class="language-css">    </span><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;container&quot;</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;row g-1&quot;</span>&gt;</span></span><br><span class="line">              <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;col-xs-12 col-sm-6 col-md-4 col-lg-3 item bg-light border&quot;</span>&gt;</span>item0<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">              <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;col-xs-12 col-sm-6 col-md-4 col-lg-3 item bg-light border&quot;</span>&gt;</span>item0<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">              <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;col-xs-12 col-sm-12 col-md-4 col-lg-3 item bg-light border&quot;</span>&gt;</span>item0<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">              <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;col-xs-12 col-sm-12 col-md-12 col-lg-3 item bg-light border&quot;</span>&gt;</span>item0<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
 <p>效果<br><img src="https://i.loli.net/2021/07/20/yuNS6VdK95GkBt4.gif" alt="pic"><br>其他<a target="_blank" rel="noopener" href="https://v5.bootcss.com/docs/examples/">官方示例</a>,Element UI的响应式布局与Bootstrap是相似的工作原理，这里不再赘述。<br>想了解更多关于<a target="_blank" rel="noopener" href="https://getbootstrap.com/">Bootstrap</a>和<a target="_blank" rel="noopener" href="https://element.eleme.cn/">Element UI</a>相关内容点击他们</p>
-<h3 id="四、总结"><a href="#四、总结" class="headerlink" title="四、总结"></a>四、总结</h3><p>作为前端小白，学习完Html、CSS、JavaScript等一堆东西，等到真正开始写Web页面还是一头雾水，回忆刚学习写客户端时肯定要从基础的页面布局来入手，于是有了这篇文章。因此这篇文章主要面向的是前端初学者，还请大神勿喷。当然由于作者水平有限，难免出现纰漏，如有问题还请不吝赐教。文章涉及<a target="_blank" rel="noopener" href="https://github.com/chenXming/CSS_Layout">源码</a><br>参考资料：<br><a target="_blank" rel="noopener" href="https://getbootstrap.com/">Bootstrap</a><br><a target="_blank" rel="noopener" href="https://element-plus.gitee.io/">Element UI</a><br><a target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000011358507">CSS布局</a><br><a target="_blank" rel="noopener" href="https://shanyue.tech/post/Grid-Guide/#%E7%AE%80%E4%BB%8B">Grid 布局完全指南</a></p>
+<h3 id="四、总结"><a href="#四、总结" class="headerlink" title="四、总结"></a>四、总结</h3><p>作为前端小白，学习完Html、CSS、JavaScript等一堆东西，等到真正开始写Web页面还是一头雾水，回忆刚学习写客户端时肯定要从基础的页面布局来入手，于是有了这篇文章。因此这篇文章主要面向的是前端初学者，还请大神勿喷。当然由于作者水平有限，难免出现纰漏，如有问题还请不吝赐教。文章涉及<a href="https://github.com/chenXming/CSS_Layout">源码</a><br>参考资料：<br><a target="_blank" rel="noopener" href="https://getbootstrap.com/">Bootstrap</a><br><a target="_blank" rel="noopener" href="https://element-plus.gitee.io/">Element UI</a><br><a target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000011358507">CSS布局</a><br><a target="_blank" rel="noopener" href="https://shanyue.tech/post/Grid-Guide/#%E7%AE%80%E4%BB%8B">Grid 布局完全指南</a></p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2021/08/05/Web%E5%BC%80%E5%8F%91%E5%B8%B8%E7%94%A8%E5%B8%83%E5%B1%80%E6%96%B9%E5%BC%8F%E6%80%BB%E7%BB%93/" data-id="cllndjaws000240ex45k16q64" data-title="Web开发常用布局方式总结" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      <a data-url="https://github.com/chenXming/chenXming.github.io/2021/08/05/Web%E5%BC%80%E5%8F%91%E5%B8%B8%E7%94%A8%E5%B8%83%E5%B1%80%E6%96%B9%E5%BC%8F%E6%80%BB%E7%BB%93/" data-id="cllndzcw50001b8ex2hlib4h9" data-title="Web开发常用布局方式总结" class="article-share-link"><span class="fa fa-share">分享</span></a>
       
       
       
@@ -616,7 +616,7 @@ CSS<figure class="highlight css"><table><tr><td class="gutter"><pre><span class=
   
     <article id="post-iOS架构浅谈从 MVC、MVP 到 MVVM" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
-    <a href="/2021/05/17/iOS%E6%9E%B6%E6%9E%84%E6%B5%85%E8%B0%88%E4%BB%8E%20MVC%E3%80%81MVP%20%E5%88%B0%20MVVM/" class="article-date">
+    <a href="/chenXming/chenXming.github.io/2021/05/17/iOS%E6%9E%B6%E6%9E%84%E6%B5%85%E8%B0%88%E4%BB%8E%20MVC%E3%80%81MVP%20%E5%88%B0%20MVVM/" class="article-date">
   <time class="dt-published" datetime="2021-05-17T12:46:25.000Z" itemprop="datePublished">2021-05-17</time>
 </a>
     
@@ -628,7 +628,7 @@ CSS<figure class="highlight css"><table><tr><td class="gutter"><pre><span class=
         
   
     <h1 itemprop="name">
-      <a class="p-name article-title" href="/2021/05/17/iOS%E6%9E%B6%E6%9E%84%E6%B5%85%E8%B0%88%E4%BB%8E%20MVC%E3%80%81MVP%20%E5%88%B0%20MVVM/">iOS-架构浅谈 从 MVC、MVP 到 MVVM</a>
+      <a class="p-name article-title" href="/chenXming/chenXming.github.io/2021/05/17/iOS%E6%9E%B6%E6%9E%84%E6%B5%85%E8%B0%88%E4%BB%8E%20MVC%E3%80%81MVP%20%E5%88%B0%20MVVM/">iOS-架构浅谈 从 MVC、MVP 到 MVVM</a>
     </h1>
   
 
@@ -701,13 +701,13 @@ CSS<figure class="highlight css"><table><tr><td class="gutter"><pre><span class=
 <h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><ul>
 <li>经过几十年的发展和演变MVC模式出现了各种各样的变种，并在不同的平台上有着自己的实现。在实际项目开发中，根据具体的业务需求找到适合的架构才是最好的，架构本身并没有好坏之分。</li>
 <li>最后对文中的MVC、MVP、MVVM架构的描述也掺杂了作者的主观意见，如果对文中的内容有疑问，欢迎提出不同的意见进行讨论。</li>
-<li>本文的Demo已上传<a target="_blank" rel="noopener" href="https://github.com/chenXming/MVVMDemo">作者GitHub</a></li>
+<li>本文的Demo已上传<a href="https://github.com/chenXming/MVVMDemo">作者GitHub</a></li>
 </ul>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2021/05/17/iOS%E6%9E%B6%E6%9E%84%E6%B5%85%E8%B0%88%E4%BB%8E%20MVC%E3%80%81MVP%20%E5%88%B0%20MVVM/" data-id="cllndjawm000040ex8vij06xm" data-title="iOS-架构浅谈 从 MVC、MVP 到 MVVM" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      <a data-url="https://github.com/chenXming/chenXming.github.io/2021/05/17/iOS%E6%9E%B6%E6%9E%84%E6%B5%85%E8%B0%88%E4%BB%8E%20MVC%E3%80%81MVP%20%E5%88%B0%20MVVM/" data-id="cllndzcw70002b8ex79fx0bo2" data-title="iOS-架构浅谈 从 MVC、MVP 到 MVVM" class="article-share-link"><span class="fa fa-share">分享</span></a>
       
       
       
@@ -721,7 +721,7 @@ CSS<figure class="highlight css"><table><tr><td class="gutter"><pre><span class=
   
     <article id="post-iOS滤镜那些事儿" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
-    <a href="/2021/04/25/iOS%E6%BB%A4%E9%95%9C%E9%82%A3%E4%BA%9B%E4%BA%8B%E5%84%BF/" class="article-date">
+    <a href="/chenXming/chenXming.github.io/2021/04/25/iOS%E6%BB%A4%E9%95%9C%E9%82%A3%E4%BA%9B%E4%BA%8B%E5%84%BF/" class="article-date">
   <time class="dt-published" datetime="2021-04-25T12:46:25.000Z" itemprop="datePublished">2021-04-25</time>
 </a>
     
@@ -733,7 +733,7 @@ CSS<figure class="highlight css"><table><tr><td class="gutter"><pre><span class=
         
   
     <h1 itemprop="name">
-      <a class="p-name article-title" href="/2021/04/25/iOS%E6%BB%A4%E9%95%9C%E9%82%A3%E4%BA%9B%E4%BA%8B%E5%84%BF/">iOS-滤镜那些事儿</a>
+      <a class="p-name article-title" href="/chenXming/chenXming.github.io/2021/04/25/iOS%E6%BB%A4%E9%95%9C%E9%82%A3%E4%BA%9B%E4%BA%8B%E5%84%BF/">iOS-滤镜那些事儿</a>
     </h1>
   
 
@@ -741,7 +741,7 @@ CSS<figure class="highlight css"><table><tr><td class="gutter"><pre><span class=
     
     <div class="e-content article-entry" itemprop="articleBody">
       
-        <h3 id="一-GPUImage-框架的介绍及基本使用"><a href="#一-GPUImage-框架的介绍及基本使用" class="headerlink" title="一. GPUImage 框架的介绍及基本使用"></a>一. <code>GPUImage</code> 框架的介绍及基本使用</h3><h4 id="1-GPUImage-的介绍"><a href="#1-GPUImage-的介绍" class="headerlink" title="1.GPUImage 的介绍"></a>1.<code>GPUImage</code> 的介绍</h4><p>  GPUImage是基于<code>OpenGL ES</code>的一套图像、视频处理开源框架，它里面提供了大量的滤镜，使用者可以通过这些滤镜的组合实现很好的效果，同时也很方便在原有基础上实现自定义的滤镜。对于大规模并行操作（如处理图像或实时视频帧），GPU具有比CPU更显着的性能优势。而 GPUImage 所有滤镜是基于<code>OpenGL Shader</code>实现的，所以滤镜效果、图像处理是在GPU上执行的，处理效率比较高，在iPhone4及其以上手机，可以做到实时流畅的效果。而且它隐藏了<code>Objective-C</code>与<code>OpenGL ES</code> API交互的复杂性。目前市面上的图像视频处理App，95%以上在使用GPUImage，所以学习它的使用及原理还是很有必要的。GPUImage 同时支持iOS跟Andorid平台，地址：<a target="_blank" rel="noopener" href="https://github.com/BradLarson/GPUImage">iOS版本</a> <a target="_blank" rel="noopener" href="https://github.com/cats-oss/android-gpuimage/blob/master/README.md">Android版本</a> 也支持 <a target="_blank" rel="noopener" href="https://github.com/BradLarson/GPUImage2">Swift版本</a>，本文主要介绍它的 OC 版本，核心类的功能以及原理跟 Andorid 版本是相通的。<br>iOS开发者使用方式：直接 CocaPods 集成：</p>
+        <h3 id="一-GPUImage-框架的介绍及基本使用"><a href="#一-GPUImage-框架的介绍及基本使用" class="headerlink" title="一. GPUImage 框架的介绍及基本使用"></a>一. <code>GPUImage</code> 框架的介绍及基本使用</h3><h4 id="1-GPUImage-的介绍"><a href="#1-GPUImage-的介绍" class="headerlink" title="1.GPUImage 的介绍"></a>1.<code>GPUImage</code> 的介绍</h4><p>  GPUImage是基于<code>OpenGL ES</code>的一套图像、视频处理开源框架，它里面提供了大量的滤镜，使用者可以通过这些滤镜的组合实现很好的效果，同时也很方便在原有基础上实现自定义的滤镜。对于大规模并行操作（如处理图像或实时视频帧），GPU具有比CPU更显着的性能优势。而 GPUImage 所有滤镜是基于<code>OpenGL Shader</code>实现的，所以滤镜效果、图像处理是在GPU上执行的，处理效率比较高，在iPhone4及其以上手机，可以做到实时流畅的效果。而且它隐藏了<code>Objective-C</code>与<code>OpenGL ES</code> API交互的复杂性。目前市面上的图像视频处理App，95%以上在使用GPUImage，所以学习它的使用及原理还是很有必要的。GPUImage 同时支持iOS跟Andorid平台，地址：<a href="https://github.com/BradLarson/GPUImage">iOS版本</a> <a href="https://github.com/cats-oss/android-gpuimage/blob/master/README.md">Android版本</a> 也支持 <a href="https://github.com/BradLarson/GPUImage2">Swift版本</a>，本文主要介绍它的 OC 版本，核心类的功能以及原理跟 Andorid 版本是相通的。<br>iOS开发者使用方式：直接 CocaPods 集成：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pod &#x27;GPUImage&#x27;</span><br></pre></td></tr></table></figure>
 <p>首先来看下它的基本结构图：<img src="https://i.loli.net/2021/04/19/ORQtClgUzNJPyj2.png" alt="架构图"></p>
 <p>从这张图中我们可以看到GPUImage的几个核心类:<code>GPUImageOutput</code> <code>GPUImageFilter</code> <code>GPUImageInput 协议</code> <code>GPUImageFrameBuffer</code>,接下来我们重点讲解这几个类。</p>
@@ -909,15 +909,15 @@ CSS<figure class="highlight css"><table><tr><td class="gutter"><pre><span class=
 然后根据<code>GPUImageFilter</code>提供的初始化方法进行加载。<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">- (id)initWithVertexShaderFromString:(NSString *)vertexShaderString fragmentShaderFromString:(NSString *)fragmentShaderString;</span><br><span class="line">- (id)initWithFragmentShaderFromString:(NSString *)fragmentShaderString;</span><br><span class="line">- (id)initWithFragmentShaderFromFile:(NSString *)fragmentShaderFilename;</span><br></pre></td></tr></table></figure></li>
 <li>另一种方式:如果只是自定义<code>FragmentShader</code>，可以是将Shader语句封装为fsh结尾的文件，然后调用下面方法进行加载<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">- (id)initWithFragmentShaderFromFile:(NSString *)fragmentShaderFilename;</span><br></pre></td></tr></table></figure></li>
 </ul>
-<h4 id="2-一些特殊的自定义滤镜效果"><a href="#2-一些特殊的自定义滤镜效果" class="headerlink" title="2. 一些特殊的自定义滤镜效果"></a>2. 一些特殊的自定义滤镜效果</h4><p><img src="https://i.loli.net/2021/04/25/EFdt6xioV8rGTbw.gif" alt="自定义滤镜"><br><br>一些特殊的滤镜效果,比如抖音的滤镜效果（闪白、灵魂出窍、抖动、缩放、毛刺、眩晕等）可以查看我的<a target="_blank" rel="noopener" href="https://github.com/chenXming/GPUIamage_demo.git">GitHub</a>.<br>关于自定义滤镜部分需要你对<code>OPenGL ES</code>、线性代数以及算法有基础的了解，并且熟悉<code>GLSL着色语言</code>,如果想进一步学习可以参考GLSL的官方快速入门指导<a target="_blank" rel="noopener" href="https://www.khronos.org/opengles/sdk/docs/reference_cards/OpenGL-ES-2_0-Reference-card.pdf">OpenGL ES</a>,我们这篇文章不在涉及。</p>
+<h4 id="2-一些特殊的自定义滤镜效果"><a href="#2-一些特殊的自定义滤镜效果" class="headerlink" title="2. 一些特殊的自定义滤镜效果"></a>2. 一些特殊的自定义滤镜效果</h4><p><img src="https://i.loli.net/2021/04/25/EFdt6xioV8rGTbw.gif" alt="自定义滤镜"><br><br>一些特殊的滤镜效果,比如抖音的滤镜效果（闪白、灵魂出窍、抖动、缩放、毛刺、眩晕等）可以查看我的<a href="https://github.com/chenXming/GPUIamage_demo.git">GitHub</a>.<br>关于自定义滤镜部分需要你对<code>OPenGL ES</code>、线性代数以及算法有基础的了解，并且熟悉<code>GLSL着色语言</code>,如果想进一步学习可以参考GLSL的官方快速入门指导<a target="_blank" rel="noopener" href="https://www.khronos.org/opengles/sdk/docs/reference_cards/OpenGL-ES-2_0-Reference-card.pdf">OpenGL ES</a>,我们这篇文章不在涉及。</p>
 <h3 id="四-总结"><a href="#四-总结" class="headerlink" title="四. 总结"></a>四. 总结</h3><p>这篇文章主要是介绍了<code>GPUImage</code>的使用、滤镜链加载流程、渲染逻辑，还有一些模块未涉及到，比如<code>GLProgram</code>的创建、link过程,<code>GPUImageMovieComposition</code>视频编辑模块，滤镜的自定义流程等，需要感兴趣的同学自己探究。</p>
 <h4 id="1-进一步学习需要掌握的内容"><a href="#1-进一步学习需要掌握的内容" class="headerlink" title="1.进一步学习需要掌握的内容"></a>1.进一步学习需要掌握的内容</h4><p><a target="_blank" rel="noopener" href="http://www.amazon.com/OpenGL-Shading-Language-Randi-Rost/dp/0321637631/ref=sr_1_1?s=books&ie=UTF8&qid=1422896457&sr=1-1&keywords=opengl+shading+language">The OpenGL Shading Language</a><br><br><a target="_blank" rel="noopener" href="http://www.shaderific.com/glsl-functions">GLSL内建的函数介绍</a></p>
-<h4 id="2-一些参考引用"><a href="#2-一些参考引用" class="headerlink" title="2.一些参考引用"></a>2.一些参考引用</h4><p><a target="_blank" rel="noopener" href="https://github.com/BradLarson/GPUImage">https://github.com/BradLarson/GPUImage</a><br><br><a target="_blank" rel="noopener" href="https://www.khronos.org/opengles/sdk/docs/reference_cards/OpenGL-ES-2_0-Reference-card.pdf">https://www.khronos.org/opengles/sdk/docs/reference_cards/OpenGL-ES-2_0-Reference-card.pdf</a><br><br><a target="_blank" rel="noopener" href="https://www.jianshu.com/u/8367278ff6cf">https://www.jianshu.com/u/8367278ff6cf</a><br></p>
+<h4 id="2-一些参考引用"><a href="#2-一些参考引用" class="headerlink" title="2.一些参考引用"></a>2.一些参考引用</h4><p><a href="https://github.com/BradLarson/GPUImage">https://github.com/BradLarson/GPUImage</a><br><br><a target="_blank" rel="noopener" href="https://www.khronos.org/opengles/sdk/docs/reference_cards/OpenGL-ES-2_0-Reference-card.pdf">https://www.khronos.org/opengles/sdk/docs/reference_cards/OpenGL-ES-2_0-Reference-card.pdf</a><br><br><a target="_blank" rel="noopener" href="https://www.jianshu.com/u/8367278ff6cf">https://www.jianshu.com/u/8367278ff6cf</a><br></p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2021/04/25/iOS%E6%BB%A4%E9%95%9C%E9%82%A3%E4%BA%9B%E4%BA%8B%E5%84%BF/" data-id="cllndjawr000140exgqsv29td" data-title="iOS-滤镜那些事儿" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      <a data-url="https://github.com/chenXming/chenXming.github.io/2021/04/25/iOS%E6%BB%A4%E9%95%9C%E9%82%A3%E4%BA%9B%E4%BA%8B%E5%84%BF/" data-id="cllndzcw00000b8ex16cuey5o" data-title="iOS-滤镜那些事儿" class="article-share-link"><span class="fa fa-share">分享</span></a>
       
       
       
@@ -947,7 +947,7 @@ CSS<figure class="highlight css"><table><tr><td class="gutter"><pre><span class=
   <div class="widget-wrap">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/10/">十月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">八月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">五月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">四月 2021</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/chenXming/chenXming.github.io/archives/2021/10/">十月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/chenXming/chenXming.github.io/archives/2021/08/">八月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/chenXming/chenXming.github.io/archives/2021/05/">五月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/chenXming/chenXming.github.io/archives/2021/04/">四月 2021</a></li></ul>
     </div>
   </div>
 
@@ -960,23 +960,23 @@ CSS<figure class="highlight css"><table><tr><td class="gutter"><pre><span class=
       <ul>
         
           <li>
-            <a href="/2021/10/20/%E6%B5%85%E8%B0%88UIView%E7%9A%84%E5%88%B7%E6%96%B0%E4%B8%8E%E7%BB%98%E5%88%B6/">iOS-浅谈UIView的刷新与绘制</a>
+            <a href="/chenXming/chenXming.github.io/2021/10/20/%E6%B5%85%E8%B0%88UIView%E7%9A%84%E5%88%B7%E6%96%B0%E4%B8%8E%E7%BB%98%E5%88%B6/">iOS-浅谈UIView的刷新与绘制</a>
           </li>
         
           <li>
-            <a href="/2021/08/13/%E6%B7%B7%E5%90%88%E5%BC%80%E5%8F%91%E5%85%A5%E9%97%A8%20Vue%E7%BB%93%E5%90%88Android:iOS%E5%BC%80%E5%8F%91%E4%BB%BF%E4%BA%AC%E4%B8%9C%E9%A1%B9%E7%9B%AEApp%E5%AD%A6%E4%B9%A0/">混合开发入门 Vue结合Android/iOS开发仿京东项目App</a>
+            <a href="/chenXming/chenXming.github.io/2021/08/13/%E6%B7%B7%E5%90%88%E5%BC%80%E5%8F%91%E5%85%A5%E9%97%A8%20Vue%E7%BB%93%E5%90%88Android:iOS%E5%BC%80%E5%8F%91%E4%BB%BF%E4%BA%AC%E4%B8%9C%E9%A1%B9%E7%9B%AEApp%E5%AD%A6%E4%B9%A0/">混合开发入门 Vue结合Android/iOS开发仿京东项目App</a>
           </li>
         
           <li>
-            <a href="/2021/08/05/Web%E5%BC%80%E5%8F%91%E5%B8%B8%E7%94%A8%E5%B8%83%E5%B1%80%E6%96%B9%E5%BC%8F%E6%80%BB%E7%BB%93/">Web开发常用布局方式总结</a>
+            <a href="/chenXming/chenXming.github.io/2021/08/05/Web%E5%BC%80%E5%8F%91%E5%B8%B8%E7%94%A8%E5%B8%83%E5%B1%80%E6%96%B9%E5%BC%8F%E6%80%BB%E7%BB%93/">Web开发常用布局方式总结</a>
           </li>
         
           <li>
-            <a href="/2021/05/17/iOS%E6%9E%B6%E6%9E%84%E6%B5%85%E8%B0%88%E4%BB%8E%20MVC%E3%80%81MVP%20%E5%88%B0%20MVVM/">iOS-架构浅谈 从 MVC、MVP 到 MVVM</a>
+            <a href="/chenXming/chenXming.github.io/2021/05/17/iOS%E6%9E%B6%E6%9E%84%E6%B5%85%E8%B0%88%E4%BB%8E%20MVC%E3%80%81MVP%20%E5%88%B0%20MVVM/">iOS-架构浅谈 从 MVC、MVP 到 MVVM</a>
           </li>
         
           <li>
-            <a href="/2021/04/25/iOS%E6%BB%A4%E9%95%9C%E9%82%A3%E4%BA%9B%E4%BA%8B%E5%84%BF/">iOS-滤镜那些事儿</a>
+            <a href="/chenXming/chenXming.github.io/2021/04/25/iOS%E6%BB%A4%E9%95%9C%E9%82%A3%E4%BA%9B%E4%BA%8B%E5%84%BF/">iOS-滤镜那些事儿</a>
           </li>
         
       </ul>
@@ -1001,25 +1001,25 @@ CSS<figure class="highlight css"><table><tr><td class="gutter"><pre><span class=
     </div>
     <nav id="mobile-nav">
   
-    <a href="/" class="mobile-nav-link">Home</a>
+    <a href="/chenXming/chenXming.github.io/" class="mobile-nav-link">Home</a>
   
-    <a href="/archives" class="mobile-nav-link">Archives</a>
+    <a href="/chenXming/chenXming.github.io/archives" class="mobile-nav-link">Archives</a>
   
 </nav>
     
 
 
-<script src="/js/jquery-3.6.4.min.js"></script>
+<script src="/chenXming/chenXming.github.io/js/jquery-3.6.4.min.js"></script>
 
 
 
   
-<script src="/fancybox/jquery.fancybox.min.js"></script>
+<script src="/chenXming/chenXming.github.io/fancybox/jquery.fancybox.min.js"></script>
 
 
 
 
-<script src="/js/script.js"></script>
+<script src="/chenXming/chenXming.github.io/js/script.js"></script>
 
 
 
