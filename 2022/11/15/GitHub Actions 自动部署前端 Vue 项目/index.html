@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>GitHub Actions 自动部署前端 Vue 项目 | chenXming的个人技术网站</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="一. 概述作为前端技术人员，如果要部署一个项目大体要经过：代码开发、代码推送、打包dist文件、scp到服务器、服务器nginx配置、完成部署这几个流程，现实中我们希望项目部署尽可能自动且简单，因此诞生了各种CI&#x2F;CD工具，比如：Jenkins、gitlab ci、gitlab runner等，其实我们最熟悉的 GitHub 也提供了CI&#x2F;CD 的能力：GitHub Actions,它于2019年">
+<meta property="og:type" content="article">
+<meta property="og:title" content="GitHub Actions 自动部署前端 Vue 项目">
+<meta property="og:url" content="https://chenxming.github.io/2022/11/15/GitHub%20Actions%20%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2%E5%89%8D%E7%AB%AF%20Vue%20%E9%A1%B9%E7%9B%AE/index.html">
+<meta property="og:site_name" content="chenXming的个人技术网站">
+<meta property="og:description" content="一. 概述作为前端技术人员，如果要部署一个项目大体要经过：代码开发、代码推送、打包dist文件、scp到服务器、服务器nginx配置、完成部署这几个流程，现实中我们希望项目部署尽可能自动且简单，因此诞生了各种CI&#x2F;CD工具，比如：Jenkins、gitlab ci、gitlab runner等，其实我们最熟悉的 GitHub 也提供了CI&#x2F;CD 的能力：GitHub Actions,它于2019年">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s2.loli.net/2022/11/22/LbKqXmOwxdyYhBr.png">
+<meta property="og:image" content="https://s2.loli.net/2022/11/22/WAoUnXbaOcl28wv.png">
+<meta property="og:image" content="https://s2.loli.net/2022/12/29/QtXCsK9SiP8AyhH.png">
+<meta property="og:image" content="https://s2.loli.net/2022/11/22/LrmfoOxtJ253BdC.png">
+<meta property="og:image" content="https://s2.loli.net/2022/11/22/kracCN5MbYnR1iU.png">
+<meta property="og:image" content="https://s2.loli.net/2022/11/22/On4IHZa2QyjmUEd.png">
+<meta property="og:image" content="https://s2.loli.net/2022/12/29/PVKfULoNtjiShkJ.png">
+<meta property="og:image" content="https://s2.loli.net/2022/12/29/THu82SdE5QsDArl.png">
+<meta property="og:image" content="https://s2.loli.net/2022/12/29/J28xGTSu7wZdktp.png">
+<meta property="og:image" content="https://s2.loli.net/2022/12/29/KVHnIA8UTirJXtj.png">
+<meta property="og:image" content="https://s2.loli.net/2022/12/29/aN4Z7Ak8fsPgIJo.png">
+<meta property="og:image" content="https://s2.loli.net/2022/11/22/TcMG6iVDXkfZdJb.png">
+<meta property="og:image" content="https://s2.loli.net/2022/12/29/yh8OMVg9PYv4HcI.png">
+<meta property="og:image" content="https://s2.loli.net/2022/12/29/MlUAqoZ671FtTXR.png">
+<meta property="og:image" content="https://s2.loli.net/2022/12/29/mdMhJlj47IHDR3N.png">
+<meta property="og:image" content="https://s2.loli.net/2022/12/29/CbGXnScfWVDQTs6.png">
+<meta property="article:published_time" content="2022-11-15T12:46:25.000Z">
+<meta property="article:modified_time" content="2023-08-23T07:35:38.928Z">
+<meta property="article:author" content="chenXming">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://s2.loli.net/2022/11/22/LbKqXmOwxdyYhBr.png">
+  
+    <link rel="alternate" href="/atom.xml" title="chenXming的个人技术网站" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">chenXming的个人技术网站</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">技术博客</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS 订阅"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="搜索"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="搜索"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://chenxming.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-GitHub Actions 自动部署前端 Vue 项目" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2022/11/15/GitHub%20Actions%20%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2%E5%89%8D%E7%AB%AF%20Vue%20%E9%A1%B9%E7%9B%AE/" class="article-date">
+  <time class="dt-published" datetime="2022-11-15T12:46:25.000Z" itemprop="datePublished">2022-11-15</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      GitHub Actions 自动部署前端 Vue 项目
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h3 id="一-概述"><a href="#一-概述" class="headerlink" title="一. 概述"></a>一. 概述</h3><p>作为前端技术人员，如果要部署一个项目大体要经过：<code>代码开发</code>、<code>代码推送</code>、<code>打包dist文件</code>、<code>scp到服务器</code>、<code>服务器nginx配置</code>、<code>完成部署</code>这几个流程，现实中我们希望项目部署尽可能自动且简单，因此诞生了各种<code>CI/CD</code>工具，比如：<code>Jenkins</code>、<code>gitlab ci</code>、<code>gitlab runner</code>等，其实我们最熟悉的 <code>GitHub</code> 也提供了<code>CI/CD</code> 的能力：<code>GitHub Actions</code>,它于2019年11月正式发布，现已经支持多种的语言和框架：<strong>Node.js, Python, Java, PHP, Ruby, Go, Rust, C&#x2F;C++, .NET, Android, iOS</strong>.当然在利用<code>GitHub Actions</code>自动部署项目之前，先要利用<code>GitHub Pages</code>来发布我们的前端项目。</p>
+<h3 id="二-GitHub-Pages"><a href="#二-GitHub-Pages" class="headerlink" title="二. GitHub Pages"></a>二. GitHub Pages</h3><img src="https://s2.loli.net/2022/11/22/LbKqXmOwxdyYhBr.png" alt="github pages" style="zoom:35%;" />
+
+<p>什么是 <code>GitHub Pages</code>？官网的介绍：<strong>Websites for you and your projects.Hosted directly from your GitHub repository. Just edit, push, and your changes are live.</strong> 说的很明确了，可以利用它,将我们托管在 <code>GitHub</code> 仓库的项目部署为一个可以对外访问的网站，免去了我们自己购买与配置服务器的麻烦。</p>
+<ul>
+<li><strong>首先创建一个项目</strong>，以Vue项目为例，利用 Vue 脚手架创建一个项目 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm init vue@latest</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>这里假设你已经熟悉了 Vue 项目创建，如果不熟悉Vue可以去<a target="_blank" rel="noopener" href="https://cn.vuejs.org/guide/quick-start.html#creating-a-vue-application">查看</a><br>执行如下命令：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt; <span class="built_in">cd</span> &lt;your-project-name&gt;</span><br><span class="line">&gt; npm install</span><br><span class="line">&gt; npm run dev</span><br></pre></td></tr></table></figure>
+<p>运行后在浏览器中打开本地地址，得到如下页面：<br><img src="https://s2.loli.net/2022/11/22/WAoUnXbaOcl28wv.png" alt="vue" style="zoom:60%;" /></p>
+<ul>
+<li><p><strong>在<code>GitHub</code>上创建一个新的<code>Repository</code>,将项目上传到<code>GitHub</code>仓库</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">git init</span><br><span class="line">git add .</span><br><span class="line">git commit -m <span class="string">&quot;备注信息&quot;</span></span><br><span class="line">git remote add origin 你的远程仓库地址</span><br><span class="line">git push -u origin master</span><br></pre></td></tr></table></figure></li>
+<li><p><strong>配置 <code>GitHub Actions</code></strong><br>回到<code>GitHub</code>,点击<code>Setting</code>-&gt;<code>Pages</code>，看到如下界面</p>
+<img src="https://s2.loli.net/2022/12/29/QtXCsK9SiP8AyhH.png" alt="github" style="zoom:65%;" />
+<img src="https://s2.loli.net/2022/11/22/LrmfoOxtJ253BdC.png" alt="github" style="zoom:40%;" />
+并没有展示网址，别急！此时还需要我们去新建一个名为**gh-pages**的分支，创建完成后再次打开`Pages`，可以看到页面发生了变化
+<img src="https://s2.loli.net/2022/11/22/kracCN5MbYnR1iU.png" alt="github" style="zoom:40%;" />
+> **Source**: 选择`Deploy from a branch`, **Branch**：`github pages` 默认只能识别项目根目录的 `index` 文件，我们这里选择新建的`gh-pages`的`root`根目录，意思是去这个分支的根目录加载`index.html`文件.</li>
+<li><p><strong>打包应用，并发布到 <code>gh-pages</code> 分支</strong><br>打包应用，执行<code>npm run build</code> ，在项目根目录下得到打包后的产物<code>dist</code>文件夹,</p>
+<img src="https://s2.loli.net/2022/11/22/On4IHZa2QyjmUEd.png" alt="截屏2022-11-18 17.53.12" style="zoom:50%;" />
+
+<p>切换当前分支到<code>gh-pages</code>,并且将原有内容全部删除, 最后将<code>dist</code>文件夹下的内容全部拷贝到<code>gh-pages</code>上，push到远端.</p>
+</li>
+</ul>
+<img src="https://s2.loli.net/2022/12/29/PVKfULoNtjiShkJ.png" alt="pic" style="zoom:30%;" />
+再次点击`Setting`->`Pages` ,稍等一会儿，下面出现了一个网址,这就是项目线上地址
+<img src="https://s2.loli.net/2022/12/29/THu82SdE5QsDArl.png" alt="pci1" style="zoom:50%;" />
+
+<ul>
+<li><strong>遇到问题</strong><br>点击查看网址，并没有像我们预期的那样展示页面，而是一片空白。打开调试版查看错误信息：<img src="https://s2.loli.net/2022/12/29/J28xGTSu7wZdktp.png" alt="pic02" style="zoom:50%;" />
+如果有项目部署经验的一看就知道是怎么回事了，这是打包编译后的文件路径配置有问题，资源文件`css`、`js`，加载的路径地址不对，加载的是根路径
+`https://<用户名>.github.io/assets/index.bf782a5b.js`,而我们的资源文件在`/vue-pages/`目录下，所以当然报错`404`，修复也很简单，如果你的Vue项目是基于 Vite 的构建的，需要修改`vite.config.js`，添加`base:'./'`
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="title function_">defineConfig</span>(&#123;</span><br><span class="line">  <span class="attr">plugins</span>: [<span class="title function_">vue</span>(), <span class="title function_">vueJsx</span>()],</span><br><span class="line">  <span class="attr">base</span>:<span class="string">&#x27;./&#x27;</span>,<span class="comment">// 将根路径换成相对路径</span></span><br><span class="line">  <span class="attr">resolve</span>: &#123;</span><br><span class="line">    <span class="attr">alias</span>: &#123;</span><br><span class="line">      <span class="string">&quot;@&quot;</span>: <span class="title function_">fileURLToPath</span>(<span class="keyword">new</span> <span class="title function_">URL</span>(<span class="string">&quot;./src&quot;</span>, <span class="keyword">import</span>.<span class="property">meta</span>.<span class="property">url</span>)),</span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+如果是基于`webpack`构建，修改`vue.config.js`添加`publicPath: './'`.
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable language_">module</span>.<span class="property">exports</span> = &#123;</span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * publicPath 默认是 / 是根路径，这个是指服务的根路径：https://xxx.github.io/，发布后会从这个路径下找 js.css 等资源，而生成的网站路径是这个 https://xxx.github.io/Vue-Element/，显然是找不到的</span></span><br><span class="line"><span class="comment">   * 我们需要修改为 相对路径&#x27;./&#x27; 或是‘.’ 或是 直接设置的项目子路径 :/项目名称/ 就可找到资源了</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="attr">publicPath</span>: <span class="string">&#x27;./&#x27;</span>,</span><br><span class="line">  <span class="attr">outputDir</span>: <span class="string">&#x27;dist&#x27;</span>, <span class="comment">// dist</span></span><br><span class="line">  <span class="attr">assetsDir</span>: <span class="string">&#x27;static&#x27;</span>,</span><br><span class="line">  <span class="attr">lintOnSave</span>: process.<span class="property">env</span>.<span class="property">NODE_ENV</span> === <span class="string">&#x27;development&#x27;</span>,</span><br><span class="line">  <span class="attr">productionSourceMap</span>: <span class="literal">false</span>,</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+重新打包，将`dist`文件夹下内容拷贝到`gh-pages`分支下，并重新打开`pages`链接：`https://<用户名>.github.io/vue-pages/`
+成功部署！</li>
+</ul>
+<blockquote>
+<p>每一次修改后都要重新打包，切换分支拷贝dist文件夹，实属麻烦，能不能让<code>GitHub</code>自动检测<code>push</code>动作,自动进行打包部署吗？那就是<code>GitHub Actions</code>的工作了.</p>
+</blockquote>
+<h3 id="三-GitHub-Actions"><a href="#三-GitHub-Actions" class="headerlink" title="三. GitHub Actions"></a>三. GitHub Actions</h3><h4 id="什么是GitHub-Actions"><a href="#什么是GitHub-Actions" class="headerlink" title="什么是GitHub Actions?"></a>什么是<code>GitHub Actions</code>?</h4><p><code>GitHub Actions</code>是<code>GitHub</code>推出的一款持续集成<strong>（CI&#x2F;CD）</strong>服务，它给我们提供了虚拟的服务器资源，让我们可以基于它完成自动化测试、集成、部署等操作。这里简单介绍一下它的几个基本概念，更多内容可以去官网<a target="_blank" rel="noopener" href="https://github.com/features/actions">查看</a></p>
+<h4 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h4><ul>
+<li><p><code>Workflows（工作流程）</code><br>持续集成的运行过程称为一次工作流程，也就是我们项目开始自动化部署到部署结束的这一段过程可以称为工作流程.</p>
+</li>
+<li><p><code>job （任务）</code><br>一个工作流程中包含多个任务，简单来说就是一次自动部署的过程需要完成一个或多个任务.</p>
+</li>
+<li><p><code>step（步骤）</code><br>部署项目需要按照一个一个的步骤来进行，每个<code>job</code>由多个<code>step</code>构成.</p>
+</li>
+<li><p><code>action（动作）</code><br>每个步骤<code>step</code>可以包含一个或多个动作，比如我们在一个步骤中执行打包命令这个Action.</p>
+</li>
+</ul>
+<h4 id="语法简介"><a href="#语法简介" class="headerlink" title="语法简介"></a>语法简介</h4><ul>
+<li><p><strong>name</strong><br><code>name</code>字段是<code>workflow</code>的名称。如果省略该字段，默认为当前<code>workflow</code>的文件名.</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">name:</span> <span class="string">GitHub</span> <span class="string">CI</span></span><br></pre></td></tr></table></figure></li>
+<li><p><strong>on</strong><br><code>on</code>字段指定触发<code>workflow</code>的条件，通常是某些事件,比如代码推送<code>push</code>,拉取<code>pull_request</code>,可以是事件的数组.</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">on:</span> <span class="string">push</span></span><br><span class="line"><span class="string">or</span></span><br><span class="line"><span class="attr">on:</span> [<span class="string">push</span>, <span class="string">pull_request</span>]</span><br></pre></td></tr></table></figure>
+<p>指定触发事件时，可以限定分支或标签:</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">on:</span></span><br><span class="line">  <span class="attr">push:</span></span><br><span class="line">    <span class="attr">branches:</span>    </span><br><span class="line">      <span class="bullet">-</span> <span class="string">master</span></span><br></pre></td></tr></table></figure>
+<p>上面代码表示：只有<code>master</code>分支发生<code>push</code>事件时，才会触发<code>workflow</code>.</p>
+</li>
+<li><p><strong>jobs</strong><br><code>workflow</code>的核心就是<code>jobs</code>，任务<code>job</code>放在<code>jobs</code>这个集合下，每一个<code>job</code>都有<code>job_id</code>，用<code>job_id</code>标识一个具体任务</p>
+</li>
+<li><p><code>jobs.&lt;job_id&gt;.name</code><br>任务说明</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">jobs:</span></span><br><span class="line">  <span class="attr">my_first_job:</span> <span class="string">//</span> <span class="string">job_id</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">My</span> <span class="string">first</span> <span class="string">job</span> </span><br><span class="line">  <span class="string">my_second_job://</span> <span class="string">job_id</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">My</span> <span class="string">second</span> <span class="string">job</span></span><br></pre></td></tr></table></figure>
+<p>上面的<code>jobs</code>字段包含两项任务，<code>job_id</code>分别是<code>my_first_job</code>和<code>my_second_job</code>。</p>
+</li>
+<li><p><code>jobs.&lt;job_id&gt;.runs-on</code><br><code>runs-on</code>字段指定运行所需要的虚拟机环境,它是必填字段。</p>
+</li>
+</ul>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">runs-on:</span> <span class="string">ubuntu-18.04</span></span><br></pre></td></tr></table></figure>
+<p><code>GitHub Actions</code>给我们提提供的运行环境主要有以下几种：<br><strong>ubuntu-latest</strong>，<strong>ubuntu-18.04或ubuntu-16.04</strong><br><strong>windows-latest，windows-2019或windows-2016</strong><br><strong>macOS-latest或macOS-10.14</strong></p>
+<ul>
+<li><code>jobs.&lt;job_id&gt;.steps</code><br>任务步骤，一个<code>job</code>可以包含多个步骤，我们需要分为多个步骤来完成这个任务，每个步骤包含下面三个字段：</li>
+</ul>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">jobs.&lt;job_id&gt;.<span class="property">steps</span>.<span class="property">name</span>：步骤名称。</span><br><span class="line">jobs.&lt;job_id&gt;.<span class="property">steps</span>.<span class="property">run</span>：该步骤运行的命令或者 action。</span><br><span class="line">jobs.&lt;job_id&gt;.<span class="property">steps</span>.<span class="property">env</span>：该步骤所需的环境变量。</span><br></pre></td></tr></table></figure>
+<h4 id="使用介绍"><a href="#使用介绍" class="headerlink" title="使用介绍"></a>使用介绍</h4><ul>
+<li>新建.yml文件<br>点击主页<code>Actions</code> -&gt; <code>New workflow</code> -&gt; <code>set up a workflow yourself</code>，当然你也可以选择一个模板，点击<code>start commit</code>则会自动在我们项目目录下新建<code>.github/workflows/main.yml</code>文件.<img src="https://s2.loli.net/2022/12/29/KVHnIA8UTirJXtj.png" alt="pic" style="zoom:40%;" /></li>
+</ul>
+<p>整个<code>workflow</code>的核心就是<code>yml</code>脚本的书写。如果你需要某个<code>action</code>，不必自己写复杂的脚本，直接引用他人写好的 <code>action</code>即可，整个持续集成过程，就变成了一个<code>actions</code>的组合，你可以在<code>GitHub</code>的<a target="_blank" rel="noopener" href="https://github.com/marketplace?type=actions">官方市场</a>，可以搜索到他人提交的<code>actions</code>. 下面是我们要自动发布<code>GitHub pages</code>所写的脚本：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">name:</span> <span class="string">CI</span> <span class="string">Github</span> <span class="string">Pages</span></span><br><span class="line"><span class="attr">on:</span></span><br><span class="line">  <span class="comment">#监听push操作</span></span><br><span class="line">  <span class="attr">push:</span></span><br><span class="line">    <span class="attr">branches:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">main</span> <span class="comment"># 这里只配置了main分支，所以只有推送main分支才会触发以下任务</span></span><br><span class="line"><span class="attr">jobs:</span></span><br><span class="line">  <span class="comment"># 任务ID</span></span><br><span class="line">  <span class="attr">build-and-deploy:</span></span><br><span class="line">    <span class="comment"># 运行环境</span></span><br><span class="line">    <span class="attr">runs-on:</span> <span class="string">ubuntu-latest</span></span><br><span class="line">    <span class="comment"># 步骤</span></span><br><span class="line">    <span class="attr">steps:</span></span><br><span class="line">      <span class="comment"># 官方action，将代码拉取到虚拟机</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Checkout</span>  <span class="string">️</span> </span><br><span class="line">        <span class="attr">uses:</span> <span class="string">actions/checkout@v3</span></span><br><span class="line"></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Install</span> <span class="string">and</span> <span class="string">Build</span>   <span class="comment"># 安装依赖、打包，如果提前已打包好无需这一步</span></span><br><span class="line">        <span class="attr">run:</span> <span class="string">|</span></span><br><span class="line"><span class="string">          npm install</span></span><br><span class="line"><span class="string">          npm run build</span></span><br><span class="line"><span class="string"></span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Deploy</span>   <span class="comment"># 部署</span></span><br><span class="line">        <span class="attr">uses:</span> <span class="string">JamesIves/github-pages-deploy-action@v4.3.3</span></span><br><span class="line">        <span class="attr">with:</span></span><br><span class="line">          <span class="attr">branch:</span> <span class="string">gh-pages</span> <span class="comment"># 部署后提交到那个分支</span></span><br><span class="line">          <span class="attr">folder:</span> <span class="string">dist</span> <span class="comment"># 这里填打包好的目录名称</span></span><br></pre></td></tr></table></figure>
+<p>上面整个<code>workflow</code>的说明：</p>
+<ul>
+<li>只有当<code>main</code>分支有新的<code>push</code>推送时候才会执行整个<code>workflow</code>.</li>
+<li>整个<code>workflow</code>只有一个<code>job</code>,<code>job_id</code>是<code>build-and-deploy</code>,<code>name</code>被省略.</li>
+<li><code>job</code> 有三个<code>step</code>： 第一步是<code>Checkout</code>,获取源码，使用的<code>action</code>是<code>GitHub</code>官方的<code>actions/checkout</code>.</li>
+<li>第二步：<code>Install and Build</code>,执行了两条命令：<code>npm install</code>,<code>npm run build</code>,分别安装依赖与打包应用.</li>
+<li>第三步：<code>Deploy</code> 部署，使用的第三方<code>action</code>：<code>JamesIves/github-pages-deploy-action@v4.3.3</code>,它有两个参数：分别是<code>branch</code>、<code>folder</code>，更多关于这个<code>action</code>的详情可以去<a target="_blank" rel="noopener" href="https://github.com/marketplace/actions/deploy-to-github-pages">查看</a>.</li>
+</ul>
+<blockquote>
+<p>当点击**<code>Start commit</code>**，<code>GitHub Actions</code> 会自动运行<code>workflow</code>. 修改工程文字欢迎文字：</p>
+</blockquote>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;<span class="title class_">HelloWorld</span> msg=<span class="string">&quot;You did it!&quot;</span> /&gt;</span><br></pre></td></tr></table></figure>
+<p>改为:</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;<span class="title class_">HelloWorld</span> msg=<span class="string">&quot;GitHub Actions CI Succeed!&quot;</span> /&gt;</span><br></pre></td></tr></table></figure>
+<p><code>push</code>可以点击<code>Actions</code>查看工作流的运行情况<br><img src="https://s2.loli.net/2022/12/29/aN4Z7Ak8fsPgIJo.png" alt="flow1" style="zoom:30%;" /><br>当这个黄色加载动画变成绿色后表示<code>workflow</code>运行完成，看下最终效果：<br><img src="https://s2.loli.net/2022/11/22/TcMG6iVDXkfZdJb.png" alt="flow2" style="zoom:50%;" /><br>达到了自动部署的目的.</p>
+<h3 id="四-设置Custom-domain"><a href="#四-设置Custom-domain" class="headerlink" title="四. 设置Custom domain"></a>四. 设置<code>Custom domain</code></h3><p>其实经过上面的三步已经可以实现自动部署的目的了，但是还是有点瑕疵。我们部署后的项目地址是：<code>https://&lt;用户名&gt;.github.io/vue-pages/</code>,域名还是<code>GitHub</code>的,能不能改成我们自己的专属域名呢？比如改成<code>http://&lt;用户名&gt;.com/</code>,那就需要设置<code>Custom domain</code>了。</p>
+<h4 id="1-购买域名"><a href="#1-购买域名" class="headerlink" title="1. 购买域名"></a>1. 购买域名</h4><p>如果想将项目地址改成自己的专属域名，首先需要你去购买一个域名，目前<a target="_blank" rel="noopener" href="https://wanwang.aliyun.com/domain/searchresult/">阿里云</a>,<a target="_blank" rel="noopener" href="https://dnspod.cloud.tencent.com/">腾讯云</a>都支持域名的购买，搜索自己喜欢的域名直接付款就好了。<br><img src="https://s2.loli.net/2022/12/29/yh8OMVg9PYv4HcI.png" alt="domain"></p>
+<h4 id="2-购买域名后，还需要我们进行实名认证以及备案，按照平台的提示进行操作就好了，这里不再涉及"><a href="#2-购买域名后，还需要我们进行实名认证以及备案，按照平台的提示进行操作就好了，这里不再涉及" class="headerlink" title="2. 购买域名后，还需要我们进行实名认证以及备案，按照平台的提示进行操作就好了，这里不再涉及."></a>2. 购买域名后，还需要我们进行实名认证以及备案，按照平台的提示进行操作就好了，这里不再涉及.</h4><h4 id="3-进行DNS解析配置"><a href="#3-进行DNS解析配置" class="headerlink" title="3. 进行DNS解析配置"></a>3. 进行DNS解析配置</h4><p>这里以阿里云为例，打开域名解析控制台，点击解析按钮<br><img src="https://s2.loli.net/2022/12/29/MlUAqoZ671FtTXR.png" alt="pic" style="zoom:30%;" /><br>点击添加记录按钮，将下面两种类型的记录值添加上，记录类型是：<code>CNAME</code>，记录值就是你<code>GitHub</code>的主域名.<br><img src="https://s2.loli.net/2022/12/29/mdMhJlj47IHDR3N.png" alt="feak" style="zoom:40%;" /></p>
+<h4 id="4-设置Custom-domain"><a href="#4-设置Custom-domain" class="headerlink" title="4. 设置Custom domain"></a>4. 设置<code>Custom domain</code></h4><p>返回到项目的<code>GitHub pages</code>设置页面，将我们购买的域名添加在<code>Custom domain</code>中，点击<code>save</code>，可以看到<code>pages</code>的地址变成了我们自己的域名，访问它就会看到你的网站了.<br><img src="https://s2.loli.net/2022/12/29/CbGXnScfWVDQTs6.png" alt="pic" style="zoom:50%;" /></p>
+<h3 id="五-小结"><a href="#五-小结" class="headerlink" title="五. 小结"></a>五. 小结</h3><p><code>GitHub Actions</code>给我们提供了一站式的自动化部署体验，加上<code>Custom domain</code>的设置，完全可以用于搭建我们的个人博客，最重要的是这完全免费. 你也可以用它来部署其他框架的项目，当然这里的重点是的<code>yml</code>脚本的书写.</p>
+<p>一些参考：</p>
+<p><a target="_blank" rel="noopener" href="https://pages.github.com/">https://pages.github.com</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/features/actions">https://github.com/features/actions</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/formula10000/article/details/98946098">https://blog.csdn.net/formula10000/article/details/98946098</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://chenxming.github.io/2022/11/15/GitHub%20Actions%20%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2%E5%89%8D%E7%AB%AF%20Vue%20%E9%A1%B9%E7%9B%AE/" data-id="cllnf859p000116ex2em12aqn" data-title="GitHub Actions 自动部署前端 Vue 项目" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2023/02/06/%E4%BD%BF%E7%94%A8useReducer%20+%20useContext%20%E4%BB%A3%E6%9B%BF%20react-redux/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">前一篇</strong>
+      <div class="article-nav-title">
+        
+          使用useReducer + useContext 代替 react-redux
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2022/09/15/Vue3.2%E8%AF%AD%E6%B3%95%E7%B3%96%E4%BD%BF%E7%94%A8%E6%80%BB%E7%BB%93/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">后一篇</strong>
+      <div class="article-nav-title">Vue3.2语法糖使用总结</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/05/">五月 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/04/">四月 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/02/">二月 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/11/">十一月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/09/">九月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/07/">七月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/06/">六月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/05/">五月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">三月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/11/">十一月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/10/">十月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">九月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">八月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">五月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">四月 2021</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2023/05/26/%E6%B5%85%E8%B0%88Vue3%E5%93%8D%E5%BA%94%E5%BC%8F%E5%8E%9F%E7%90%86%E4%B8%8E%E6%BA%90%E7%A0%81%E8%A7%A3%E8%AF%BB/">浅谈Vue3响应式原理与源码解读</a>
+          </li>
+        
+          <li>
+            <a href="/2023/04/01/setState%E4%B8%8EuseState%E4%BD%BF%E7%94%A8%E6%B3%A8%E6%84%8F%E9%A1%B9/">setState与useState使用注意项</a>
+          </li>
+        
+          <li>
+            <a href="/2023/02/06/%E4%BD%BF%E7%94%A8useReducer%20+%20useContext%20%E4%BB%A3%E6%9B%BF%20react-redux/">使用useReducer + useContext 代替 react-redux</a>
+          </li>
+        
+          <li>
+            <a href="/2022/11/15/GitHub%20Actions%20%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2%E5%89%8D%E7%AB%AF%20Vue%20%E9%A1%B9%E7%9B%AE/">GitHub Actions 自动部署前端 Vue 项目</a>
+          </li>
+        
+          <li>
+            <a href="/2022/09/15/Vue3.2%E8%AF%AD%E6%B3%95%E7%B3%96%E4%BD%BF%E7%94%A8%E6%80%BB%E7%BB%93/">Vue3.2语法糖使用总结</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2023 chenXming<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

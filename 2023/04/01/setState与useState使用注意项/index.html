@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>setState与useState使用注意项 | chenXming的个人技术网站</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="一. 概述我们知道React支持两种形式来创建组件，一种是 class 组件，一种是函数组件。在 React16.8 推出之前，如果要为组件添加状态，那么只能使用 class 组件来实现，并通过 setState 来修改状态值，达到更新组件的目的。在 React16.8 推出 Hook 后，可以利用 useState 来为函数组件添加状态，这让我们的状态管理更加容易。 前端开发的核心在于状态管理，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="setState与useState使用注意项">
+<meta property="og:url" content="https://chenxming.github.io/2023/04/01/setState%E4%B8%8EuseState%E4%BD%BF%E7%94%A8%E6%B3%A8%E6%84%8F%E9%A1%B9/index.html">
+<meta property="og:site_name" content="chenXming的个人技术网站">
+<meta property="og:description" content="一. 概述我们知道React支持两种形式来创建组件，一种是 class 组件，一种是函数组件。在 React16.8 推出之前，如果要为组件添加状态，那么只能使用 class 组件来实现，并通过 setState 来修改状态值，达到更新组件的目的。在 React16.8 推出 Hook 后，可以利用 useState 来为函数组件添加状态，这让我们的状态管理更加容易。 前端开发的核心在于状态管理，">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://p0.qhimg.com/t0108deb0bea2ef8e61.gif">
+<meta property="og:image" content="http://p0.qhimg.com/t0108deb0bea2ef8e61.gif">
+<meta property="og:image" content="http://p0.qhimg.com/t0117ba326de299d3c1.gif">
+<meta property="og:image" content="http://p0.qhimg.com/t01b5cf4464f59df53d.gif">
+<meta property="og:image" content="http://p0.qhimg.com/t01e7078390fa6b8a6f.gif">
+<meta property="og:image" content="http://p0.qhimg.com/t01c8e55684f9b6edfd.gif">
+<meta property="article:published_time" content="2023-04-01T12:46:25.000Z">
+<meta property="article:modified_time" content="2023-08-23T07:29:52.233Z">
+<meta property="article:author" content="chenXming">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://p0.qhimg.com/t0108deb0bea2ef8e61.gif">
+  
+    <link rel="alternate" href="/atom.xml" title="chenXming的个人技术网站" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">chenXming的个人技术网站</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">技术博客</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS 订阅"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="搜索"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="搜索"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://chenxming.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-setState与useState使用注意项" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2023/04/01/setState%E4%B8%8EuseState%E4%BD%BF%E7%94%A8%E6%B3%A8%E6%84%8F%E9%A1%B9/" class="article-date">
+  <time class="dt-published" datetime="2023-04-01T12:46:25.000Z" itemprop="datePublished">2023-04-01</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      setState与useState使用注意项
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h3 id="一-概述"><a href="#一-概述" class="headerlink" title="一. 概述"></a>一. 概述</h3><p>我们知道<code>React</code>支持两种形式来创建组件，一种是 class 组件，一种是函数组件。在 React16.8 推出之前，如果要为组件添加状态，那么只能使用 class 组件来实现，并通过 <code>setState</code> 来修改状态值，达到更新组件的目的。在 React16.8 推出 Hook 后，可以利用 <code>useState</code> 来为函数组件添加状态，这让我们的状态管理更加容易。</p>
+<p>前端开发的核心在于状态管理，在实际项目开发中，特别是对新手<code>React</code>开发人员而言，对<code>setState</code>和<code>useState</code> Hook 的使用上仍有一些容易犯的错误和注意事项，在本文中，我们将探讨如何避免这些问题。</p>
+<h3 id="二-Class-组件中的-setState-的使用"><a href="#二-Class-组件中的-setState-的使用" class="headerlink" title="二. Class 组件中的 setState 的使用"></a>二. Class 组件中的 setState 的使用</h3><p>在 class 组件中添加一个构造函数<code>constructor</code>，然后在该函数中为 <code>this.state</code>赋初值添加状态.</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">ClassComponent</span> <span class="keyword">extends</span> <span class="title class_ inherited__">Component</span> &#123;</span><br><span class="line">    </span><br><span class="line">    <span class="title function_">constructor</span>(<span class="params">props</span>) &#123;</span><br><span class="line">        <span class="variable language_">super</span>(props)</span><br><span class="line">        <span class="variable language_">this</span>.<span class="property">state</span> = &#123;</span><br><span class="line">            <span class="attr">count</span>: <span class="number">0</span>,</span><br><span class="line">            <span class="attr">otherCount</span>: <span class="number">100</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="variable language_">this</span>.<span class="property">addCount</span> = <span class="variable language_">this</span>.<span class="property">addCount</span>.<span class="title function_">bind</span>(<span class="variable language_">this</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="title function_">addCount</span>(<span class="params">params</span>) &#123;</span><br><span class="line">       <span class="variable language_">this</span>.<span class="title function_">setState</span>(&#123;<span class="attr">count</span>:<span class="variable language_">this</span>.<span class="property">state</span>.<span class="property">count</span> + <span class="number">1</span>&#125;)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="title function_">render</span>(<span class="params"></span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> (</span><br><span class="line">            <span class="language-xml"><span class="tag">&lt;<span class="name">div</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">                class组件</span></span><br><span class="line"><span class="language-xml">                <span class="tag">&lt;<span class="name">div</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">                    count: &#123;this.state.count&#125;<span class="tag">&lt;<span class="name">br</span>&gt;</span><span class="tag">&lt;/<span class="name">br</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">                    otherCount: &#123;this.state.otherCount&#125;</span></span><br><span class="line"><span class="language-xml">                <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">                <span class="tag">&lt;<span class="name">div</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">                    <span class="tag">&lt;<span class="name">button</span> <span class="attr">onClick</span>=<span class="string">&#123;this.addCount&#125;</span>&gt;</span>+1<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">                <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">            <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line">        );</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="title class_">ClassComponent</span>;</span><br></pre></td></tr></table></figure>
+<p>​                                                                <img src="http://p0.qhimg.com/t0108deb0bea2ef8e61.gif" alt="pic01"></p>
+<p>通过<code>this.setState(&#123;count:this.state.count + 1&#125;)</code>改变 state 里面 count 的值。这样操作是可以达到预期效果，但是再次添加一行同样的代码看会发生什么</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="title function_">addCount</span>(<span class="params">params</span>) &#123;</span><br><span class="line">   <span class="variable language_">this</span>.<span class="title function_">setState</span>(&#123;<span class="attr">count</span>:<span class="variable language_">this</span>.<span class="property">state</span>.<span class="property">count</span> + <span class="number">1</span>&#125;)</span><br><span class="line">   <span class="variable language_">this</span>.<span class="title function_">setState</span>(&#123;<span class="attr">count</span>:<span class="variable language_">this</span>.<span class="property">state</span>.<span class="property">count</span> + <span class="number">1</span>&#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>​                                                                 <img src="http://p0.qhimg.com/t0108deb0bea2ef8e61.gif" alt="pic01"></p>
+<p><code>count </code>的值并没有像我们预想的那样每次点击<code>+2</code>。是什么原因导致的呢？<br><strong>State 的更新可能是异步的</strong>，出于性能考虑，<code>React</code> 可能会把多个<code>setState()</code>调用合并成一个调用，要解决这个问题，可以让 <code>setState()</code> 接收一个函数而不是一个对象。再来重新认识一下<code>setState</code></p>
+<h4 id="setState"><a href="#setState" class="headerlink" title="setState()"></a><code>setState()</code></h4><h5 id="1-setState-stateChange-callback"><a href="#1-setState-stateChange-callback" class="headerlink" title="1. setState(stateChange,[callback])"></a>1. <code>setState(stateChange,[callback])</code></h5><p>第一个参数是你要改变的 state 对象，第二个是可选的回调函数。这种形式的<code>setState()</code>是异步的，并且在同一周期内会对多个 <code>setState</code>进行批处理。后调用的 <code>setState()</code> 将覆盖同一周期内先调用 <code>setState</code> 的值，因此<code>count</code>数仅增加一次。如果要解决这个问题，我们需要为<code>setState</code>传入一个函数.</p>
+<h5 id="2-setState-updater-callback"><a href="#2-setState-updater-callback" class="headerlink" title="2. setState(updater,[callback])"></a>2. <code>setState(updater,[callback])</code></h5><p>第一个参数是带有形参的<code>updater</code>函数</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(state, props) =&gt; stateChange</span><br></pre></td></tr></table></figure>
+<p><code>state</code>对应变化时组件状态的引用，也就是最新的<code>state</code>，此次更新被应用时的<code>props</code>是第二个参数(可选)。因此可以使用这种方式来解决我们上面遇到的问题.</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="title function_">addCount</span>(<span class="params">params</span>) &#123;</span><br><span class="line">    <span class="variable language_">this</span>.<span class="title function_">setState</span>(<span class="function">(<span class="params">state</span>) =&gt;</span> (&#123;</span><br><span class="line">        <span class="attr">count</span>: state.<span class="property">count</span> + <span class="number">1</span></span><br><span class="line">    &#125;))</span><br><span class="line">    <span class="variable language_">this</span>.<span class="title function_">setState</span>(<span class="function">(<span class="params">state</span>) =&gt;</span> (&#123;</span><br><span class="line">        <span class="attr">count</span>: state.<span class="property">count</span> + <span class="number">1</span></span><br><span class="line">    &#125;))</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+<p><img src="http://p0.qhimg.com/t0117ba326de299d3c1.gif" alt="pic02"></p>
+<p><code>[callback]</code>是<code>setState()</code>的第二个参数，为可选的回调函数,它将在<code>setState</code>完成合并并重新渲染组件后执行。因此我们也可以在这个回调函数中获取到最新的<code>state</code>值.</p>
+<h4 id="对State赋值"><a href="#对State赋值" class="headerlink" title="对State赋值"></a>对State赋值</h4><p><code>State</code>里面的状态数据可能是值类型或是引用类型，对于基本数据类型<strong>（String(字符串)，Number(数值)，Boolean(布尔值)，Undefined，Null）</strong>可以直接对其赋值。对于引用类型的数据<strong>（Array，Object）</strong>赋值时要特别注意：<strong>不要直接修改原始引用类型的值</strong>。例如：为数组增加一项</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 错误，不要直接修改this.state的值</span></span><br><span class="line"><span class="variable language_">this</span>.<span class="title function_">setState</span>(&#123;</span><br><span class="line">    <span class="attr">listData</span>: <span class="variable language_">this</span>.<span class="property">state</span>.<span class="property">listData</span>.<span class="title function_">push</span>(<span class="number">100</span>)</span><br><span class="line">&#125;)</span><br><span class="line"><span class="comment">// 错误</span></span><br><span class="line"><span class="variable language_">this</span>.<span class="title function_">setState</span>(<span class="function"><span class="params">preSate</span> =&gt;</span> (&#123;</span><br><span class="line">    <span class="attr">listData</span>: preSate.<span class="property">listData</span>.<span class="title function_">push</span>(<span class="number">100</span>)</span><br><span class="line">&#125;))</span><br></pre></td></tr></table></figure>
+
+<p>正确的做法是使用<code>concat</code>或是ES6的扩展语法：</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 正确</span></span><br><span class="line"><span class="variable language_">this</span>.<span class="title function_">setState</span>(<span class="function"><span class="params">preSate</span> =&gt;</span> (&#123;</span><br><span class="line">    <span class="attr">listData</span>: preSate.<span class="property">listData</span>.<span class="title function_">concat</span>(<span class="number">100</span>)</span><br><span class="line">&#125;))</span><br><span class="line"><span class="comment">// 正确</span></span><br><span class="line"><span class="variable language_">this</span>.<span class="title function_">setState</span>(<span class="function"><span class="params">preSate</span> =&gt;</span> (&#123;</span><br><span class="line">    <span class="attr">listData</span>: [...preSate.<span class="property">listData</span>,<span class="number">100</span>]</span><br><span class="line">&#125;))</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>注意：在修改<strong>数组类型</strong>的状态时不要使用<code>push</code>、<code>pop</code>、<code>shift</code>、<code>unshift</code>等方法,因为这些方法都是在原数组的基础上修改,取而代之的是使用<code>concat</code>、<code>slice</code>、<code>splice</code>、<code>filter</code>或是ES6的扩展语法，返回一个新的数组。</p>
+</blockquote>
+<p>对于<strong>对象类型</strong>的状态而言可以这样赋值：</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 使用ES6 的Object.assgin方法</span></span><br><span class="line"><span class="variable language_">this</span>.<span class="title function_">setState</span>(<span class="function"><span class="params">preState</span> =&gt;</span> (&#123;</span><br><span class="line">    <span class="attr">mapData</span>: <span class="title class_">Object</span>.<span class="title function_">assign</span>(&#123;&#125;,preState.<span class="property">mapData</span>,&#123;<span class="attr">name</span>:<span class="string">&#x27;React&#x27;</span>&#125;)</span><br><span class="line">&#125;))</span><br><span class="line"><span class="comment">// 使用对象扩展语法</span></span><br><span class="line"><span class="variable language_">this</span>.<span class="title function_">setState</span>(<span class="function"><span class="params">preState</span> =&gt;</span> (&#123;</span><br><span class="line">    <span class="attr">mapData</span>: &#123;...preState.<span class="property">mapData</span>,<span class="attr">name</span>:<span class="string">&#x27;React&#x27;</span>&#125;</span><br><span class="line">&#125;))</span><br></pre></td></tr></table></figure>
+
+<h3 id="三-函数组件中的useState"><a href="#三-函数组件中的useState" class="headerlink" title="三. 函数组件中的useState"></a>三. 函数组件中的useState</h3><p><strong>Hook</strong> 是 React 16.8 的新增特性，它可以让你在不编写 <code>class</code> 组件的情况下使用 state 以及其他的 React 特性。<code>useState</code> 是允许你在 React 函数组件中添加 state 的 <code>Hook</code>.</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="title class_">React</span>, &#123; memo, useState &#125; <span class="keyword">from</span> <span class="string">&#x27;react&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">HookComponent</span> = (<span class="params"></span>) =&gt; &#123;    </span><br><span class="line">    <span class="keyword">const</span> [data,setData] = <span class="title function_">useState</span>(&#123;</span><br><span class="line">        <span class="attr">count</span>:<span class="number">0</span>,</span><br><span class="line">        <span class="attr">otherCount</span>: <span class="number">100</span></span><br><span class="line">    &#125;)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">const</span> <span class="title function_">addCount</span> = (<span class="params"></span>) =&gt; &#123;</span><br><span class="line">        <span class="comment">// wrong</span></span><br><span class="line">        <span class="comment">// setState(&#123;count:state.count+1&#125;)</span></span><br><span class="line">        <span class="comment">// correct</span></span><br><span class="line">         <span class="title function_">setData</span>(<span class="title class_">Object</span>.<span class="title function_">assign</span>(&#123;&#125;,&#123;...data,<span class="attr">count</span>:data.<span class="property">count</span>+<span class="number">1</span>&#125;))</span><br><span class="line">         <span class="title function_">setData</span>(<span class="title class_">Object</span>.<span class="title function_">assign</span>(&#123;&#125;,&#123;...data,<span class="attr">count</span>:data.<span class="property">count</span>+<span class="number">1</span>&#125;))</span><br><span class="line">         <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;data.count=====&#x27;</span>,data.<span class="property">count</span>); <span class="comment">// 0</span></span><br><span class="line">    &#125;</span><br><span class="line">  </span><br><span class="line">    <span class="keyword">return</span> (</span><br><span class="line">            <span class="language-xml"><span class="tag">&lt;<span class="name">div</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">                函数组件</span></span><br><span class="line"><span class="language-xml">                <span class="tag">&lt;<span class="name">div</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">                    count: &#123;data.count&#125;<span class="tag">&lt;<span class="name">br</span>&gt;</span><span class="tag">&lt;/<span class="name">br</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">                    otherCount: &#123;data.otherCount&#125;</span></span><br><span class="line"><span class="language-xml">                <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">                <span class="tag">&lt;<span class="name">div</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">                    <span class="tag">&lt;<span class="name">button</span> <span class="attr">onClick</span>=<span class="string">&#123;addCount&#125;</span>&gt;</span>+1<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">                <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">            <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line">        );</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="title function_">memo</span>(<span class="title class_">HookComponent</span>);</span><br></pre></td></tr></table></figure>
+
+<h4 id="更新state"><a href="#更新state" class="headerlink" title="更新state"></a>更新state</h4><p><code>useState</code>的唯一参数是初始 state，返回值为：当前 state 以及更新 state 的函数。如果我们也像在 class 组件中使用对象对其进行赋值，并调用更新 state 函数，那么一定要注意：<strong>class 组件中的 <code>this.setState</code>是合并state，而函数组件中更新 state 的函数是替换当前的 state</strong>。例如要对<code>count</code>执行 <code>+1</code> 操作，以下写法是错误的：</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 错误</span></span><br><span class="line"><span class="title function_">setData</span>(&#123;<span class="attr">count</span>:data.<span class="property">count</span>+<span class="number">1</span>&#125;)</span><br></pre></td></tr></table></figure>
+
+<p><img src="http://p0.qhimg.com/t01b5cf4464f59df53d.gif" alt="pic04"></p>
+<p><code>otherCount</code> 的值变为了 undefined.</p>
+<p>正确写法：</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="title function_">setData</span>(<span class="title class_">Object</span>.<span class="title function_">assign</span>(&#123;&#125;,&#123;...data,<span class="attr">count</span>:data.<span class="property">count</span>+<span class="number">1</span>&#125;))</span><br></pre></td></tr></table></figure>
+
+<p>上面的写法这和预期的一样。但是，<strong>直接更新状态是一种不好的做法</strong>, 同样如果连续调用两次，<code>count</code>的值并没有像预期的那样改变.</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="title function_">setData</span>(<span class="title class_">Object</span>.<span class="title function_">assign</span>(&#123;&#125;,&#123;...data,<span class="attr">count</span>:data.<span class="property">count</span>+<span class="number">1</span>&#125;))</span><br><span class="line"><span class="title function_">setData</span>(<span class="title class_">Object</span>.<span class="title function_">assign</span>(&#123;&#125;,&#123;...data,<span class="attr">count</span>:data.<span class="property">count</span>+<span class="number">1</span>&#125;))</span><br></pre></td></tr></table></figure>
+
+<p><img src="http://p0.qhimg.com/t01e7078390fa6b8a6f.gif" alt="pic05"></p>
+<p>与 class 组件状态更新原理不同，这里<code>setData()</code>是替换当前的 state,只执行最后一次<code>+1</code>的操作。如果要解决这个问题需要传递给 <code>setState()</code> 一个回调函数，在这个回调函数中我们获取该实例的当前状态，例如 <code>setState(currentState =&gt; currentState + newValue)</code>。</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="title function_">setData</span>(<span class="function"><span class="params">data</span> =&gt;</span> (&#123;</span><br><span class="line">    ...data,</span><br><span class="line">    <span class="attr">count</span>:data.<span class="property">count</span> + <span class="number">1</span></span><br><span class="line">&#125;))</span><br><span class="line"><span class="title function_">setData</span>(<span class="function"><span class="params">data</span> =&gt;</span> (&#123;</span><br><span class="line">    ...data,</span><br><span class="line">    <span class="attr">count</span>:data.<span class="property">count</span> + <span class="number">1</span></span><br><span class="line">&#125;))</span><br></pre></td></tr></table></figure>
+
+<p><img src="http://p0.qhimg.com/t01c8e55684f9b6edfd.gif" alt="pic06"></p>
+<h4 id="获取State的最新值"><a href="#获取State的最新值" class="headerlink" title="获取State的最新值"></a>获取State的最新值</h4><p>我们知道<strong>State 的更新可能是异步的</strong>，但有时候的业务场景需要我们同步拿到变量的最新变化值，以便做下一步操作，可以用一下几种方式获取：</p>
+<h5 id="1-回调函数内获取"><a href="#1-回调函数内获取" class="headerlink" title="1. 回调函数内获取"></a>1. 回调函数内获取</h5><p>在setXXX中使用回调函数更新</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="title function_">setData</span>(<span class="function"><span class="params">data</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> count = data.<span class="property">count</span> + <span class="number">1</span></span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;count====&gt;&gt;&gt;&#x27;</span>,count); <span class="comment">// 获取最新值,执行后续逻辑</span></span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">        ...data,</span><br><span class="line">        <span class="attr">count</span>:count</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h5 id="2-直接使用useEffect-获取"><a href="#2-直接使用useEffect-获取" class="headerlink" title="2. 直接使用useEffect 获取"></a>2. 直接使用<code>useEffect</code> 获取</h5><figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">... </span><br><span class="line"><span class="keyword">const</span> <span class="title function_">addCount</span> = (<span class="params"></span>) =&gt; &#123;</span><br><span class="line">    <span class="title function_">setData</span>(<span class="title class_">Object</span>.<span class="title function_">assign</span>(&#123;&#125;,&#123;...data,<span class="attr">count</span>:data.<span class="property">count</span>+<span class="number">1</span>&#125;))</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 使用 useEffect 解决数据同步问题</span></span><br><span class="line"><span class="title function_">useEffect</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">  <span class="comment">// 获取最新值，执行后续逻辑</span></span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;count====&#x27;</span>,data.<span class="property">count</span>);</span><br><span class="line">&#125;, [data]);</span><br></pre></td></tr></table></figure>
+
+<h5 id="3-使用Promise实现"><a href="#3-使用Promise实现" class="headerlink" title="3.使用Promise实现"></a>3.使用Promise实现</h5><figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"> <span class="keyword">new</span> <span class="title class_">Promise</span>(<span class="function">(<span class="params">resolve</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> newData = &#123;</span><br><span class="line">        ...data,</span><br><span class="line">        <span class="attr">count</span>:data.<span class="property">count</span> + <span class="number">1</span></span><br><span class="line">    &#125;</span><br><span class="line">   <span class="title function_">setData</span>(<span class="title class_">Object</span>.<span class="title function_">assign</span>(&#123;&#125;,newData))</span><br><span class="line">   <span class="title function_">resolve</span>(newData)</span><br><span class="line">&#125;).<span class="title function_">then</span>(<span class="function"><span class="params">data</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;data====&#x27;</span>,data); <span class="comment">// 获取到最新值，进行后续逻辑处理</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<h3 id="四-小结"><a href="#四-小结" class="headerlink" title="四. 小结"></a>四. 小结</h3><p>需要注意的是，在 React18 之前，在非 React 调度流程如<code>setTimeout</code> <code>setInterval</code> ，直接在 <code>DOM</code> 上绑定原生事件等，<code>setState</code> 是同步的，除了这些，<code>setState</code>都是异步执行。从<code>react18</code>开始, 使用了<code>createRoot</code>创建应用后, 所有的更新都会自动进行批处理，也就是异步合并。后续文章中我们在探讨 React 的自动批处理流程，本文不再涉及。</p>
+<p>一些参考：</p>
+<p><a target="_blank" rel="noopener" href="https://zh-hans.reactjs.org/docs/hooks-reference.html#usecontext">React</a></p>
+<p><a target="_blank" rel="noopener" href="https://zh-hans.reactjs.org/docs/state-and-lifecycle.html">State 和生命周期指南</a><br><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/48563650/does-react-keep-the-order-for-state-updates/48610973#48610973">深入学习：何时以及为什么 setState() 会批量执行？</a><br><a target="_blank" rel="noopener" href="https://zh-hans.reactjs.org/docs/react-component.html#setstate">深入：为什么不直接更新 this.state？</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://chenxming.github.io/2023/04/01/setState%E4%B8%8EuseState%E4%BD%BF%E7%94%A8%E6%B3%A8%E6%84%8F%E9%A1%B9/" data-id="cllnf859z000a16ex40li3riz" data-title="setState与useState使用注意项" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2023/05/26/%E6%B5%85%E8%B0%88Vue3%E5%93%8D%E5%BA%94%E5%BC%8F%E5%8E%9F%E7%90%86%E4%B8%8E%E6%BA%90%E7%A0%81%E8%A7%A3%E8%AF%BB/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">前一篇</strong>
+      <div class="article-nav-title">
+        
+          浅谈Vue3响应式原理与源码解读
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2023/02/06/%E4%BD%BF%E7%94%A8useReducer%20+%20useContext%20%E4%BB%A3%E6%9B%BF%20react-redux/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">后一篇</strong>
+      <div class="article-nav-title">使用useReducer + useContext 代替 react-redux</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/05/">五月 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/04/">四月 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/02/">二月 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/11/">十一月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/09/">九月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/07/">七月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/06/">六月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/05/">五月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">三月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/11/">十一月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/10/">十月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">九月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">八月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">五月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">四月 2021</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2023/05/26/%E6%B5%85%E8%B0%88Vue3%E5%93%8D%E5%BA%94%E5%BC%8F%E5%8E%9F%E7%90%86%E4%B8%8E%E6%BA%90%E7%A0%81%E8%A7%A3%E8%AF%BB/">浅谈Vue3响应式原理与源码解读</a>
+          </li>
+        
+          <li>
+            <a href="/2023/04/01/setState%E4%B8%8EuseState%E4%BD%BF%E7%94%A8%E6%B3%A8%E6%84%8F%E9%A1%B9/">setState与useState使用注意项</a>
+          </li>
+        
+          <li>
+            <a href="/2023/02/06/%E4%BD%BF%E7%94%A8useReducer%20+%20useContext%20%E4%BB%A3%E6%9B%BF%20react-redux/">使用useReducer + useContext 代替 react-redux</a>
+          </li>
+        
+          <li>
+            <a href="/2022/11/15/GitHub%20Actions%20%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2%E5%89%8D%E7%AB%AF%20Vue%20%E9%A1%B9%E7%9B%AE/">GitHub Actions 自动部署前端 Vue 项目</a>
+          </li>
+        
+          <li>
+            <a href="/2022/09/15/Vue3.2%E8%AF%AD%E6%B3%95%E7%B3%96%E4%BD%BF%E7%94%A8%E6%80%BB%E7%BB%93/">Vue3.2语法糖使用总结</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2023 chenXming<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>
