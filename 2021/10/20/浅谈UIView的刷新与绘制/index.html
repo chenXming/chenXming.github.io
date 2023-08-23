@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>iOS-浅谈UIView的刷新与绘制 | chenXming的个人技术网站</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="概述：UIView是我们在做iOS开发时每天都会接触到的类，几乎所有跟页面显示相关的控件也都继承自它。但是关于UIView的布局、显示、以及绘制原理等方面笔者一直一知半解，只有真正了解了它的原理才能更好的服务我们的开发。并且在市场对iOS开发者要求越来越高的大环境下，对App页面流畅度的优化也是对高级及以上开发者必问的面试题，这就需要我们要对UIView有更深的认知。 一.UIView 与 CA">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS-浅谈UIView的刷新与绘制">
+<meta property="og:url" content="http://example.com/2021/10/20/%E6%B5%85%E8%B0%88UIView%E7%9A%84%E5%88%B7%E6%96%B0%E4%B8%8E%E7%BB%98%E5%88%B6/index.html">
+<meta property="og:site_name" content="chenXming的个人技术网站">
+<meta property="og:description" content="概述：UIView是我们在做iOS开发时每天都会接触到的类，几乎所有跟页面显示相关的控件也都继承自它。但是关于UIView的布局、显示、以及绘制原理等方面笔者一直一知半解，只有真正了解了它的原理才能更好的服务我们的开发。并且在市场对iOS开发者要求越来越高的大环境下，对App页面流畅度的优化也是对高级及以上开发者必问的面试题，这就需要我们要对UIView有更深的认知。 一.UIView 与 CA">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i.loli.net/2021/10/20/UXuCDP245d3NJFp.jpg">
+<meta property="og:image" content="https://i.loli.net/2021/09/16/cjktXl87QqGrnRv.png">
+<meta property="og:image" content="https://i.loli.net/2021/09/16/VSO2jzHUb1tlJPE.png">
+<meta property="og:image" content="https://i.loli.net/2021/09/16/oaQ1j8ACevryIXG.png">
+<meta property="og:image" content="https://i.loli.net/2021/09/16/xze9EgrtG1c4hVH.png">
+<meta property="article:published_time" content="2021-10-20T12:46:25.000Z">
+<meta property="article:modified_time" content="2023-08-23T06:42:14.387Z">
+<meta property="article:author" content="chenXming">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2021/10/20/UXuCDP245d3NJFp.jpg">
+  
+    <link rel="alternate" href="/atom.xml" title="chenXming的个人技术网站" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">chenXming的个人技术网站</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">技术博客</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS 订阅"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="搜索"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="搜索"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-浅谈UIView的刷新与绘制" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2021/10/20/%E6%B5%85%E8%B0%88UIView%E7%9A%84%E5%88%B7%E6%96%B0%E4%B8%8E%E7%BB%98%E5%88%B6/" class="article-date">
+  <time class="dt-published" datetime="2021-10-20T12:46:25.000Z" itemprop="datePublished">2021-10-20</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      iOS-浅谈UIView的刷新与绘制
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p><img src="https://i.loli.net/2021/10/20/UXuCDP245d3NJFp.jpg" alt="topPic"></p>
+<h3 id="概述："><a href="#概述：" class="headerlink" title="概述："></a>概述：</h3><p><code>UIView</code>是我们在做iOS开发时每天都会接触到的类，几乎所有跟页面显示相关的控件也都继承自它。但是关于<code>UIView</code>的布局、显示、以及绘制原理等方面笔者一直一知半解，只有真正了解了它的原理才能更好的服务我们的开发。并且在市场对iOS开发者要求越来越高的大环境下，对App页面流畅度的优化也是对高级及以上开发者必问的面试题，这就需要我们要对<code>UIView</code>有更深的认知。</p>
+<h3 id="一-UIView-与-CALayer"><a href="#一-UIView-与-CALayer" class="headerlink" title="一.UIView 与 CALayer"></a>一.UIView 与 CALayer</h3><p><code>UIView</code>：一个视图（UIView）就是在屏幕上显示的一个矩形块（比如图片，文字或者视频），它能够拦截类似于鼠标点击或者触摸手势等用户输入。视图在层级关系中可以互相嵌套，一个视图可以管理它的所有子视图的位置,在iOS当中，所有的视图都从一个叫做UIView的基类派生而来，UIView可以处理触摸事件，可以支持基于Core Graphics绘图，可以做仿射变换（例如旋转或者缩放），或者简单的类似于滑动或者渐变的动画。</p>
+<p><code>CALayer</code>:<code>CALayer</code>类在概念上和<code>UIView</code>类似，同样也是一些被层级关系树管理的矩形块，同样也可以包含一些内容（像图片，文本或者背景色），管理子图层的位置。它们有一些方法和属性用来做动画和变换。和UIView最大的不同是CALayer不处理用户的交互。</p>
+<p><code>CALayer</code>并不清楚具体的响应链（iOS通过视图层级关系用来传送触摸事件的机制），于是它并不能够响应事件，即使它提供了一些方法来判断一个触点是否在图层的范围之内。</p>
+<h4 id="1-UIView-与-CALayer的关系"><a href="#1-UIView-与-CALayer的关系" class="headerlink" title="1. UIView 与 CALayer的关系"></a>1. UIView 与 CALayer的关系</h4><p>每一个<code>UIView</code>都有一个<code>CALayer</code>实例的图层属性，也就是所谓的<code>backing layer</code>，视图的职责就是创建并管理这个图层，以确保当子视图在层级关系中添加或者被移除的时候，他们关联的图层也同样对应在层级关系树当中有相同的操作.</p>
+<blockquote>
+<p>两者的关系：实际上这些背后关联的图层(Layer)才是真正用来在屏幕上显示和做动画，UIView仅仅是对它的一个封装，提供了一些iOS类似于处理触摸的具体功能，以及Core Animation底层方法的高级接口。</p>
+</blockquote>
+<p>这里引申出面试常问的一个问题：<strong>为什么iOS要基于UIView和CALayer提供两个平行的层级关系呢？为什么不用一个简单的层级来处理所有事情呢？</strong></p>
+<p>原因在于要做职责分离（单一职责原则），这样也能避免很多重复代码。在iOS和Mac OS两个平台上，事件和用户交互有很多地方的不同，基于多点触控的用户界面和基于鼠标键盘有着本质的区别，这就是为什么iOS有<code>UIKit</code>和<code>UIView</code>，但是Mac OS有<code>AppKit</code>和<code>NSView</code>的原因。他们功能上很相似，但是在实现上有着显著的区别。把这种功能的逻辑分开并封装成独立的Core Animation框架，苹果就能够在iOS和Mac OS之间共享代码，使得对苹果自己的OS开发团队和第三方开发者去开发两个平台的应用更加便捷。</p>
+<h4 id="2-CALayer的一些常用属性"><a href="#2-CALayer的一些常用属性" class="headerlink" title="2. CALayer的一些常用属性"></a>2. CALayer的一些常用属性</h4><h5 id="contents属性"><a href="#contents属性" class="headerlink" title="contents属性"></a><code>contents</code>属性</h5><p><code>CALayer</code>的contents属性可以让我们为layer图层设置一张图片，我们看下它的定义</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">/* An object providing the contents of the layer, typically a CGImageRef,</span><br><span class="line"> * but may be something else. (For example, NSImage objects are</span><br><span class="line"> * supported on Mac OS X 10.6 and later.) Default value is nil.</span><br><span class="line"> * Animatable. */</span><br><span class="line"></span><br><span class="line">@property(nullable, strong) id contents;</span><br></pre></td></tr></table></figure>
+<p>这个属性的类型被定义为id，意味着它可以是任何类型的对象。在这种情况下，你可以给contents属性赋任何值，你的app都能够编译通过。但是,如果你给contents赋的不是CGImage，那么你得到的图层将是空白的。事实上，你真正要赋值的类型应该是CGImageRef，它是一个指向CGImage结构的指针，UIImage有一个CGImage属性，它返回一个CGImageRef，但是要使用它还需要进行强转:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">layer.contents = (__bridge id _Nullable)(image.CGImage);</span><br></pre></td></tr></table></figure>
+<h5 id="contentGravity属性"><a href="#contentGravity属性" class="headerlink" title="contentGravity属性"></a><code>contentGravity</code>属性</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">/* A string defining how the contents of the layer is mapped into its</span><br><span class="line"> * bounds rect. Options are `center&#x27;, `top&#x27;, `bottom&#x27;, `left&#x27;,</span><br><span class="line"> * `right&#x27;, `topLeft&#x27;, `topRight&#x27;, `bottomLeft&#x27;, `bottomRight&#x27;,</span><br><span class="line"> * `resize&#x27;, `resizeAspect&#x27;, `resizeAspectFill&#x27;. The default value is</span><br><span class="line"> * `resize&#x27;. Note that &quot;bottom&quot; always means &quot;Minimum Y&quot; and &quot;top&quot;</span><br><span class="line"> * always means &quot;Maximum Y&quot;. */</span><br><span class="line"></span><br><span class="line">@property(copy) CALayerContentsGravity contentsGravity;</span><br></pre></td></tr></table></figure>
+<p>如果我们为图层<code>layer</code>设置contents为一张图片，那么可以使用这个属性来让图片自适应layer的大小，它类似于UIView的<code>contentMode</code>属性，但是它是一个NSString类型，而不是像对应的UIKit部分，那里面的值是枚举。contentsGravity可选的常量值有以下一些：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">kCAGravityCenter</span><br><span class="line">kCAGravityTop</span><br><span class="line">kCAGravityBottom</span><br><span class="line">kCAGravityLeft</span><br><span class="line">kCAGravityRight</span><br><span class="line">kCAGravityTopLeft</span><br><span class="line">kCAGravityTopRight</span><br><span class="line">kCAGravityBottomLeft</span><br><span class="line">kCAGravityBottomRight</span><br><span class="line">kCAGravityResize</span><br><span class="line">kCAGravityResizeAspect</span><br><span class="line">kCAGravityResizeAspectFill</span><br></pre></td></tr></table></figure>
+<p>例如，如果要让图片等比例拉伸去自适应layer的大小可以直接这样设置</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">layer.contentsGravity = kCAGravityResizeAspect;</span><br></pre></td></tr></table></figure>
+<h5 id="contentsScale属性"><a href="#contentsScale属性" class="headerlink" title="contentsScale属性"></a><code>contentsScale</code>属性</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">/* Defines the scale factor applied to the contents of the layer. If</span><br><span class="line"> * the physical size of the contents is &#x27;(w, h)&#x27; then the logical size</span><br><span class="line"> * (i.e. for contentsGravity calculations) is defined as &#x27;(w /</span><br><span class="line"> * contentsScale, h / contentsScale)&#x27;. Applies to both images provided</span><br><span class="line"> * explicitly and content provided via -drawInContext: (i.e. if</span><br><span class="line"> * contentsScale is two -drawInContext: will draw into a buffer twice</span><br><span class="line"> * as large as the layer bounds). Defaults to one. Animatable. */</span><br><span class="line"></span><br><span class="line">@property CGFloat contentsScale</span><br></pre></td></tr></table></figure>
+<p><code>contentsScale</code>属性定义了<code>contents</code>设置图片的像素尺寸和视图大小的比例，默认情况下它是一个值为1.0的浮点数。这个属性其实属于支持Retina屏幕机制的一部分，它的值等于当前设备的物理尺寸与逻辑尺寸的比值。如果contentsScale设置为1.0，将会以每个点1个像素绘制图片，如果设置为2.0，则会以每个点2个像素绘制图片。当用代码的方式来处理<code>contents</code>设置图片的时候，一定要手动的设置图层的contentsScale属性，否则图片在Retina设备上就显示得不正确啦。代码如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">layer.contentsScale = [UIScreen mainScreen].scale;</span><br></pre></td></tr></table></figure>
+<h5 id="maskToBounds属性"><a href="#maskToBounds属性" class="headerlink" title="maskToBounds属性"></a><code>maskToBounds</code>属性</h5><p><code>maskToBounds</code>属性的功能类似于UIView的<code>clipsToBounds</code>属性，如果设置为YES，则会将超出layer范围的图片进行裁剪.</p>
+<h5 id="contentsRect属性"><a href="#contentsRect属性" class="headerlink" title="contentsRect属性"></a><code>contentsRect</code>属性</h5><p><code>contentsRect</code>属性在我们的日常开发中用的不多，它的主要作用是可以让我们显示<code>contents</code>所设置图片的一个子区域。它是单位坐标取值在0到1之间。默认值是{0, 0, 1, 1}，这意味着整个图片默认都是可见的，如果我们指定一个小一点的矩形，比如{0,0,0.5,0.5},那么layer显示的只有图片的左上角，也就是1&#x2F;4的区域。</p>
+<blockquote>
+<p>实际上给layer的contents赋CGImage的值不是唯一的设置其寄宿图的方法。我们也可以直接用Core Graphics直接绘制。通过继承UIView并实现-drawRect:方法来自定义绘制，如果单独使用<code>CALayer</code>那么可以实现其代理(CALayerDelegate)方法<code>- (void)drawLayer:(CALayer *)layer inContext:(CGContextRef)ctx;</code>在这里面进行自主绘制。实际的方法绘制流程我们在下面进行探讨。</p>
+</blockquote>
+<h3 id="二-View的布局与显示"><a href="#二-View的布局与显示" class="headerlink" title="二.View的布局与显示"></a>二.View的布局与显示</h3><h4 id="1-图像显示原理"><a href="#1-图像显示原理" class="headerlink" title="1.图像显示原理"></a>1.图像显示原理</h4><p>在开始介绍图像的布局与显示之前，我们有必要先了解下图像的显示原理，也就是我们创建一个显示控件是怎么通过CPU与GPU的运算显示在屏幕上的。这个过程大体分为刘六个阶段：<br><img src="https://i.loli.net/2021/09/16/cjktXl87QqGrnRv.png" alt="绘制"></p>
+<ul>
+<li><strong>布局</strong> ：首先一个视图由CPU进行Frame布局，准备视图(view)和图层(layer)的层级关系,以及设置图层属性（位置，背景色，边框）等等。</li>
+<li><strong>显示</strong>：view的显示图层(layer)，它的寄宿图片被绘制的阶段。所谓的寄宿图，就是上面我们提到过的layer所显示的内容。它有两种设置形式：一种是直接设置<code>layer.contents</code>，赋值一个<code>CGImageRef</code>;第二种是重写UIView的<code>drawRect:</code>或<code>CALayerDelegate</code>的<code>drawLayer:inContext:</code>方法，实现自定义绘制。注意：如果实现了这两个方法，会额外的消耗CPU的性能。</li>
+<li><strong>准备</strong>：这是Core Animation准备发送数据到渲染服务的阶段。这个阶段主要对视图所用的图片进行解码以及图片的格式转换。PNG或者JPEG压缩之后的图片文件会比同质量的位图小得多。但是在图片绘制到屏幕上之前，必须把它扩展成完整的未解压的尺寸（通常等同于图片宽 x 长 x 4个字节）。为了节省内存，iOS通常直到真正绘制的时候才去解码图片。</li>
+<li><strong>提交</strong>：CPU会将处理视图和图层的层级关系打包，通过IPC（内部处理通信）通道提交给渲染服务，渲染服务由OpenGL ES和GPU组成。</li>
+<li><strong>生成帧缓存</strong>：渲染服务首先将图层数据交给OpenGL ES进行纹理生成和着色，生成前后帧缓存。再根据显示硬件的刷新频率，一般以设备的VSync信号和CADisplayLink为标准，进行前后帧缓存的切换。</li>
+<li><strong>渲染</strong> ：将最终要显示在画面上的后帧缓存交给GPU，进行采集图片和形状，运行变换，应用纹理和混合，最终显示在屏幕上。</li>
+</ul>
+<blockquote>
+<p>注意：当图层被成功打包，发送到渲染服务器之后，CPU仍然要做如下工作：为了显示屏幕上的图层，Core Animation必须对渲染树种的每个可见图层通过OpenGL循环转换成纹理三角板。由于GPU并不知晓Core Animation图层的任何结构，所以必须要由CPU做这些事情。</p>
+</blockquote>
+<p>前四个阶段都在软件层面处理（通过CPU），第五阶段也有CPU参与，只有最后一个完全由GPU执行。而且，你真正能控制只有前两个阶段：布局和显示，Core Animation框架在内部处理剩下的事务，你也控制不了它。所以接下来我们来重点分析布局与显示阶段。</p>
+<h4 id="2-布局"><a href="#2-布局" class="headerlink" title="2.布局"></a>2.布局</h4><p><code>布局</code>：布局就是一个视图在屏幕上的位置与大小。UIView有三个比较重要的布局属性：<code>frame</code>，<code>bounds</code>和<code>center</code>.UIView提供了用来通知系统某个view布局发生变化的方法，也提供了在view布局重新计算后调用的可重写的方法。</p>
+<h5 id="layoutSubviews-方法"><a href="#layoutSubviews-方法" class="headerlink" title="layoutSubviews()方法"></a><code>layoutSubviews()</code>方法</h5><p><code>layoutSubviews()</code>:当一个视图“认为”应该重新布局自己的子控件时，它便会自动调用自己的layoutSubviews方法，在该方法中“刷新”子控件的布局.这个方法并没有系统实现，需要我们重新这个方法，在里面实现子控件的重新布局。这个方法很开销很大，因为它会在每个子视图上起作用并且调用它们相应的<code>layoutSubviews</code>方法.系统会根据当前<code>run loop</code>的不同状态来触发<code>layoutSubviews</code>调用的机制,并不需要我们手动调用。以下是他的触发时机：</p>
+<ul>
+<li>直接修改 view 的大小时会触发</li>
+<li>调用<code>addSubview</code>会触发子视图的<code>layoutSubviews</code></li>
+<li>用户在 UIScrollView 上滚动（layoutSubviews 会在<code>UIScrollView</code>和它的父<code>view</code>上被调用）</li>
+<li>用户旋转设备</li>
+<li>更新视图的 constraints<br>这些方式都会告知系统<code>view</code>的位置需要被重新计算，继而会调用<code>layoutSubviews</code>.当然也可以直接触发<code>layoutSubviews</code>的方法。</li>
+</ul>
+<h5 id="setNeedsLayout-方法"><a href="#setNeedsLayout-方法" class="headerlink" title="setNeedsLayout()方法"></a><code>setNeedsLayout()</code>方法</h5><p><code>setNeedsLayout()</code>方法的调用可以触发<code>layoutSubviews</code>,调用这个方法代表向系统表示视图的布局需要重新计算。不过调用这个方法只是为当前的视图打了一个<code>脏标记</code>，告知系统需要在下一次<code>run loop</code>中重新布局这个视图。也就是调用<code>setNeedsLayout()</code>后会有一段时间间隔，然后触发<code>layoutSubviews</code>.当然这个间隔不会对用户造成影响，因为永远不会长到对界面造成卡顿。</p>
+<h5 id="layoutIfNeeded-方法"><a href="#layoutIfNeeded-方法" class="headerlink" title="layoutIfNeeded()方法"></a><code>layoutIfNeeded()</code>方法</h5><p><code>layoutIfNeeded()</code>方法的作用是告知系统，当前打了<code>脏标记</code>的视图需要立即更新，不要等到下一次<code>run loop</code>到来时在更新,此时该方法会立即触发<code>layoutSubviews</code>方法。当然但如果你调用了<code>layoutIfNeeded</code>之后，并且没有任何操作向系统表明需要刷新视图，那么就不会调用<code>layoutsubview</code>.这个方法在你需要依赖新布局，无法等到下一次 <code>run loop</code>的时候会比<code>setNeedsLayout</code>有用。</p>
+<h4 id="3-显示"><a href="#3-显示" class="headerlink" title="3.显示"></a>3.显示</h4><p>和布局的方法类似，显示也有触发更新的方法，它们由系统在检测到更新时被自动调用，或者我们可以手动调用直接刷新。</p>
+<h5 id="drawRect-方法"><a href="#drawRect-方法" class="headerlink" title="drawRect:方法"></a><code>drawRect:</code>方法</h5><p>在上面我们提到过，如果要设置视图的寄宿图，除了直接设置<code>view.layer.contents</code>属性，还可以自主进行绘制。绘制的方法就是实现view的<code>drawRect:</code>方法。这个方法类似于布局的<code>layoutSubviews</code>方法，它会对当前View的显示进行刷新，不同的是它不会触发后续对视图的子视图方法的调用。跟<code>layoutSubviews</code>一样，我们不能直接手动调用<code>drawRect:</code>方法，应该调用间接的触发方法，让系统在 <code>run loop</code> 中的不同结点自动调用。具体的绘制流程我们在本文第三节进行介绍。</p>
+<h5 id="setNeedsDisplay-方法"><a href="#setNeedsDisplay-方法" class="headerlink" title="setNeedsDisplay()方法"></a><code>setNeedsDisplay()</code>方法</h5><p>这个方法类似于布局中的<code>setNeedsLayout</code>。它会给有内容更新的视图设置一个内部的标记，但在视图重绘之前就会返回。然后在下一个<code>run loop</code>中，系统会遍历所有已标标记的视图，并调用它们的<code>drawRect:</code>方法。大部分时候，在视图中更新任何 UI 组件都会把相应的视图标记为“dirty”，通过设置视图“内部更新标记”，在下一次<code>run loop</code>中就会重绘，而不需要显式的调用<code>setNeedsDisplay</code>. </p>
+<h3 id="三-UIView的系统绘制与异步绘制流程"><a href="#三-UIView的系统绘制与异步绘制流程" class="headerlink" title="三.UIView的系统绘制与异步绘制流程"></a>三.UIView的系统绘制与异步绘制流程</h3><h4 id="UIView的绘制流程"><a href="#UIView的绘制流程" class="headerlink" title="UIView的绘制流程"></a>UIView的绘制流程</h4><p>接下来我们看下<code>UIView</code>的绘制流程<br><img src="https://i.loli.net/2021/09/16/VSO2jzHUb1tlJPE.png" alt="绘制"></p>
+<ul>
+<li>UIView调用setNeedsDisplay,这个方法我们已经介绍过了，它并不会立即开始绘制。</li>
+<li>UIView 调用<code>setNeedsDisplay</code>，实际会调用其layer属性的同名方法，此时相当于给layer打上绘制标记。</li>
+<li>在当前<code>run loop</code> 将要结束的时候，才会调用CALayer的display方法进入到真正的绘制当中</li>
+<li>在CALayer的display方法中,会判断<code>layer</code>的代理方法<code>displayLayer:</code>是否被实现，如果代理没有实现这个方法，则进入系统绘制流程，否则进入异步绘制入口。</li>
+</ul>
+<h4 id="系统绘制"><a href="#系统绘制" class="headerlink" title="系统绘制"></a>系统绘制</h4><p><img src="https://i.loli.net/2021/09/16/oaQ1j8ACevryIXG.png" alt="xitong"></p>
+<ul>
+<li><p>在系统绘制开始时，在CALayer内部会创建一个绘制上下文，这个上下文可以理解为<code>CGContextRef</code>,我们在<code>drawRect:</code>方法中获取到的<code>currentRef</code>就是它。</p>
+</li>
+<li><p>然后layer会判断是否有delegate，没有delegate就调用<code>CALayer</code>的<code>drawInContext</code>方法，如果有代理，并且你实现了CALayerDelegate协议中的<code>-drawLayer:inContext:</code>方法或者UIView中的<code>-drawRect:</code>方法（其实就是前者的包装方法），那么系统就会调用你实现的这两个方法中的一个。</p>
+<blockquote>
+<p>关于这里的代理我的理解是：如果你直接使用的UIView，那么layer的代理就是当前view，你直接实现<code>-drawRect:</code>，然后在这个方法里面进行自主绘制; 如果你用的是单独创建的<code>CALayer</code>，那么你需要设置<code>layer.delegate = self;</code> 当然这里的self就是持有layer的视图或是控制器了，这时你需要实现<code>-drawLayer:inContext:</code>方法，然后在这个方法里面进行绘制。</p>
+</blockquote>
+</li>
+<li><p>最后CALayer把位图传给GPU去渲染，也就是将生成的 bitmap 位图赋值给 layer.content 属性。</p>
+<blockquote>
+<p>注意：使用CPU进行绘图的代价昂贵，除非绝对必要，否则你应该避免重绘你的视图。提高绘制性能的秘诀就在于尽量避免去绘制。</p>
+</blockquote>
+</li>
+</ul>
+<h4 id="异步绘制"><a href="#异步绘制" class="headerlink" title="异步绘制"></a>异步绘制</h4><h5 id="什么是异步绘制"><a href="#什么是异步绘制" class="headerlink" title="什么是异步绘制?"></a>什么是异步绘制?</h5><p>通过上面的介绍我们熟悉了系统绘制流程，系统绘制就是在主线程中进行上下文的创建，控件的自主绘制等，这就导致了主线程频繁的处理UI绘制的工作，如果要绘制的元素过多，过于频繁，就会造成卡顿。而异步绘制就是把复杂的绘制过程放到后台线程中执行，从而减轻主线程负担，来提升UI流畅度。</p>
+<h5 id="异步绘制流程"><a href="#异步绘制流程" class="headerlink" title="异步绘制流程"></a>异步绘制流程</h5><p><img src="https://i.loli.net/2021/09/16/xze9EgrtG1c4hVH.png" alt="pic"><br>上面很明显的展示了异步绘制过程：</p>
+<ul>
+<li>从上图看，异步绘制的入口在<code>layer</code>的代理方法<code>displayLayer:</code>，如果要进行异步绘制，我们必须在自定义view中实现这个方法</li>
+<li>在<code>displayLayer:</code>方法中我们开辟子线程</li>
+<li>在子线程中我们创建绘制上下文，并借助<code>Core Graphics</code> 相关API完成自主绘制</li>
+<li>完成绘制后生成Image图片</li>
+<li>最后回到主线程，把Image图片赋值给layer的contents属性。</li>
+</ul>
+<p>当然我们在日常开发中还要考虑线程的管理与绘制时机等问题，使用第三方库<code>YYAsyncLayer</code>可以让我们把注意力放在具体的绘制上,具体的使用流程可以点<a target="_blank" rel="noopener" href="https://github.com/ibireme/YYAsyncLayer">这里</a>去查看.</p>
+<h3 id="四-总结"><a href="#四-总结" class="headerlink" title="四.总结"></a>四.总结</h3><p>我们知道，当我们实现了<code>CALayerDelegate</code>协议中的<code>-drawLayer:inContext:</code>方法或者UIView中的<code>-drawRect:</code>方法，图层就创建了一个绘制上下文，这个上下文需要的大小的内存可从这个算式得出：图层宽X图层高X4字节，宽高的单位均为像素。对于一个在Retina iPad上的全屏图层来说，这个内存量就是 2048X15264字节，相当于12MB内存，图层每次重绘的时候都需要重新抹掉内存然后重新分配。可见使用<code>Core Graphics</code>利用CPU进行绘制代价是很高的，那么如何进行高效的绘图呢？<a target="_blank" rel="noopener" href="https://github.com/qunten/iOS-Core-Animation-Advanced-Techniques">iOS-Core-Animation-Advanced-Techniques</a>给出了答案，我们在日常开发中完全可以使用<code>Core Animation</code>的<code>CAShapeLayer</code>代替<code>Core Graphics</code>进行图形的绘制，具体的方法这里就不介绍了，感兴趣的可以自行去查看。</p>
+<p>参考引用：<br><a target="_blank" rel="noopener" href="https://github.com/qunten/iOS-Core-Animation-Advanced-Techniques">iOS-Core-Animation-Advanced-Techniques</a><br><a target="_blank" rel="noopener" href="https://github.com/ibireme/YYAsyncLayer">YYAsyncLayer</a><br><a target="_blank" rel="noopener" href="https://juejin.cn/post/6844903567610871816">https://juejin.cn/post/6844903567610871816</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2021/10/20/%E6%B5%85%E8%B0%88UIView%E7%9A%84%E5%88%B7%E6%96%B0%E4%B8%8E%E7%BB%98%E5%88%B6/" data-id="cllndjawu000340exht8wbbef" data-title="iOS-浅谈UIView的刷新与绘制" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2021/08/13/%E6%B7%B7%E5%90%88%E5%BC%80%E5%8F%91%E5%85%A5%E9%97%A8%20Vue%E7%BB%93%E5%90%88Android:iOS%E5%BC%80%E5%8F%91%E4%BB%BF%E4%BA%AC%E4%B8%9C%E9%A1%B9%E7%9B%AEApp%E5%AD%A6%E4%B9%A0/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">后一篇</strong>
+      <div class="article-nav-title">混合开发入门 Vue结合Android/iOS开发仿京东项目App</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/10/">十月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">八月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">五月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">四月 2021</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/10/20/%E6%B5%85%E8%B0%88UIView%E7%9A%84%E5%88%B7%E6%96%B0%E4%B8%8E%E7%BB%98%E5%88%B6/">iOS-浅谈UIView的刷新与绘制</a>
+          </li>
+        
+          <li>
+            <a href="/2021/08/13/%E6%B7%B7%E5%90%88%E5%BC%80%E5%8F%91%E5%85%A5%E9%97%A8%20Vue%E7%BB%93%E5%90%88Android:iOS%E5%BC%80%E5%8F%91%E4%BB%BF%E4%BA%AC%E4%B8%9C%E9%A1%B9%E7%9B%AEApp%E5%AD%A6%E4%B9%A0/">混合开发入门 Vue结合Android/iOS开发仿京东项目App</a>
+          </li>
+        
+          <li>
+            <a href="/2021/08/05/Web%E5%BC%80%E5%8F%91%E5%B8%B8%E7%94%A8%E5%B8%83%E5%B1%80%E6%96%B9%E5%BC%8F%E6%80%BB%E7%BB%93/">Web开发常用布局方式总结</a>
+          </li>
+        
+          <li>
+            <a href="/2021/05/17/iOS%E6%9E%B6%E6%9E%84%E6%B5%85%E8%B0%88%E4%BB%8E%20MVC%E3%80%81MVP%20%E5%88%B0%20MVVM/">iOS-架构浅谈 从 MVC、MVP 到 MVVM</a>
+          </li>
+        
+          <li>
+            <a href="/2021/04/25/iOS%E6%BB%A4%E9%95%9C%E9%82%A3%E4%BA%9B%E4%BA%8B%E5%84%BF/">iOS-滤镜那些事儿</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2023 chenXming<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>iOS-架构浅谈 从 MVC、MVP 到 MVVM | chenXming的个人技术网站</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="概述做了这么多年的客户端研发一直在使用苹果爸爸推荐的MVC架构模式。MVC从应用层面进行分层开发，极大优化了我们的代码结构，简单易上手，很容易被程序员所接受。程序员刚接手一个新项目，如果是MVC的架构模式，会减少代码熟悉时间，快速的进行开发和维护工作，实际上对于多人开发维护的项目，MVC仍然是非常好的架构模式，这也是这种架构模式经久不衰的原因。但是任何事物都有两面性，随着项目需求的增加，业务逻辑、">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS-架构浅谈 从 MVC、MVP 到 MVVM">
+<meta property="og:url" content="http://example.com/2021/05/17/iOS%E6%9E%B6%E6%9E%84%E6%B5%85%E8%B0%88%E4%BB%8E%20MVC%E3%80%81MVP%20%E5%88%B0%20MVVM/index.html">
+<meta property="og:site_name" content="chenXming的个人技术网站">
+<meta property="og:description" content="概述做了这么多年的客户端研发一直在使用苹果爸爸推荐的MVC架构模式。MVC从应用层面进行分层开发，极大优化了我们的代码结构，简单易上手，很容易被程序员所接受。程序员刚接手一个新项目，如果是MVC的架构模式，会减少代码熟悉时间，快速的进行开发和维护工作，实际上对于多人开发维护的项目，MVC仍然是非常好的架构模式，这也是这种架构模式经久不衰的原因。但是任何事物都有两面性，随着项目需求的增加，业务逻辑、">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i.loli.net/2021/05/14/4r1hM8dXbIi2DoW.png">
+<meta property="og:image" content="https://i.loli.net/2021/05/14/duZsN7whafP2ilp.png">
+<meta property="og:image" content="https://i.loli.net/2021/05/14/P6JDxH1Oon3Kbhv.gif">
+<meta property="og:image" content="https://i.loli.net/2021/05/14/F6PMRtE8hq4vSXx.png">
+<meta property="og:image" content="https://i.loli.net/2021/05/14/RnhykDzO638YPIU.png">
+<meta property="og:image" content="https://i.loli.net/2021/05/14/8dJYU67qnSvBQwf.png">
+<meta property="og:image" content="https://i.loli.net/2021/05/14/wkuAR8XNDgU2BSt.png">
+<meta property="article:published_time" content="2021-05-17T12:46:25.000Z">
+<meta property="article:modified_time" content="2023-08-23T06:42:33.496Z">
+<meta property="article:author" content="chenXming">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2021/05/14/4r1hM8dXbIi2DoW.png">
+  
+    <link rel="alternate" href="/atom.xml" title="chenXming的个人技术网站" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">chenXming的个人技术网站</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">技术博客</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS 订阅"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="搜索"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="搜索"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-iOS架构浅谈从 MVC、MVP 到 MVVM" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2021/05/17/iOS%E6%9E%B6%E6%9E%84%E6%B5%85%E8%B0%88%E4%BB%8E%20MVC%E3%80%81MVP%20%E5%88%B0%20MVVM/" class="article-date">
+  <time class="dt-published" datetime="2021-05-17T12:46:25.000Z" itemprop="datePublished">2021-05-17</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      iOS-架构浅谈 从 MVC、MVP 到 MVVM
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><p>做了这么多年的客户端研发一直在使用苹果爸爸推荐的MVC架构模式。MVC从应用层面进行分层开发，极大优化了我们的代码结构，简单易上手，很容易被程序员所接受。程序员刚接手一个新项目，如果是MVC的架构模式，会减少代码熟悉时间，快速的进行开发和维护工作，实际上对于多人开发维护的项目，MVC仍然是非常好的架构模式，这也是这种架构模式经久不衰的原因。<br>但是任何事物都有两面性，随着项目需求的增加，业务逻辑、网络请求、代理方法等都往Controller层加塞，导致Controller层变得越来越臃肿，动辄上千行的代码量绝对是维护人员的噩梦，因此在MVC基础上逐渐衍生出来了MVP、MVVM等架构模式。<br><br>本文是基于<code>OC</code>代码进行阐述的，使用iOS开发经典的 <code>TableView</code> 列表来分析每个架构模式。相信看了这篇文章你会有所领悟。当然一千个人眼中有一千种哈姆雷特，具体在业务开发中使用哪种模式需要你自己去衡量。</p>
+<h3 id="1-传统的MVC设计模式"><a href="#1-传统的MVC设计模式" class="headerlink" title="1.传统的MVC设计模式"></a>1.传统的<code>MVC</code>设计模式</h3><p><img src="https://i.loli.net/2021/05/14/4r1hM8dXbIi2DoW.png" alt="MVC"><br><br><code>M</code>: Model 数据层，负责网络数据的处理，数据持久化存储和读取等工作<br><br><code>V</code>: View 视图层，负责呈现从数据层传递的数据渲染工作，以及与用户的交互工作<br><br><code>C</code>: Controller控制器，负责连接Model层跟View层，响应View的事件和作为View的代理，以及界面跳转和生命周期的处理等任务</p>
+<h4 id="用户的交互逻辑"><a href="#用户的交互逻辑" class="headerlink" title="用户的交互逻辑"></a>用户的交互逻辑</h4><p>用户点击 View(视图) –&gt; 视图响应事件 –&gt;通过代理传递事件到Controller–&gt;发起网络请求更新Model—&gt;Model处理完数据–&gt;代理或通知给Controller–&gt;改变视图样式–&gt;完成</p>
+<blockquote>
+<p>可以看到Controller强引用View与Model，而View与Model是分离的，所以就可以保证Model和View的可测试性和复用性，但是Controller不行，因为Controller是Model和View的中介，所以不能复用，或者说很难复用。</p>
+</blockquote>
+<h4 id="iOS开发实际使用的MVC架构"><a href="#iOS开发实际使用的MVC架构" class="headerlink" title="iOS开发实际使用的MVC架构"></a>iOS开发实际使用的MVC架构</h4><p><img src="https://i.loli.net/2021/05/14/duZsN7whafP2ilp.png" alt="实际MVC"><br>在我们实际开发中使用的MVC模式可以看到，View与Controller耦合在一起了。这是由于每一个界面的创建都需要一个Controller，而每一个Controller里面必然会带一个View，这就导致了C和V的耦合。这种结构确实可以提高开发效率，但是一旦界面建复杂就会造成Controller变得非常臃肿和难以维护。</p>
+<h4 id="MVC代码示例"><a href="#MVC代码示例" class="headerlink" title="MVC代码示例"></a>MVC代码示例</h4><p>我们要实现一个简单的列表页面，每行cell都一个按钮，点击按钮前面数字➕1操作。<br><br><img src="https://i.loli.net/2021/05/14/P6JDxH1Oon3Kbhv.gif" alt="mvcexamp"><br>核心代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">// Controller</span><br><span class="line">- (UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath&#123;</span><br><span class="line">    </span><br><span class="line">    __weak typeof(self) wealSelf = self;</span><br><span class="line">    MVCTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@&quot;Cell_identifer&quot;];</span><br><span class="line">    if(cell == nil)&#123;</span><br><span class="line">        cell = [[MVCTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@&quot;Cell_identifer&quot;];</span><br><span class="line">    &#125;</span><br><span class="line">    DemoModel *model = self.dataArray[indexPath.row];</span><br><span class="line">    [cell loadDataWithModel:model];</span><br><span class="line">    cell.clickBtn = ^&#123;</span><br><span class="line">        NSLog(@&quot;id===%ld&quot;,model.num);</span><br><span class="line">        [wealSelf changeNumWithModel:model];</span><br><span class="line">    &#125;;</span><br><span class="line">    cell.selectionStyle = UITableViewCellSelectionStyleNone;</span><br><span class="line">    return cell;</span><br><span class="line">&#125;</span><br><span class="line">/*</span><br><span class="line">* 用户点击事件通过Block传递过来后，在Controller层处理更新Mdoel以及更新视图的逻辑</span><br><span class="line">*/</span><br><span class="line">- (void)changeNumWithModel:(DemoModel*)model&#123;</span><br><span class="line">    </span><br><span class="line">    model.num++;</span><br><span class="line">    NSIndexPath *path = [NSIndexPath indexPathForRow:model.Id inSection:0];</span><br><span class="line">    [self.mainTabelView reloadRowsAtIndexPaths:@[path] withRowAnimation:UITableViewRowAnimationLeft];</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<ul>
+<li>可以看到用户点击事件通过Block传递过来后，在Controller层处理更新Mdoel以及更新视图的逻辑</li>
+</ul>
+<h3 id="2-MVP设计模式"><a href="#2-MVP设计模式" class="headerlink" title="2.MVP设计模式"></a>2.<code>MVP</code>设计模式</h3><p><img src="https://i.loli.net/2021/05/14/F6PMRtE8hq4vSXx.png" alt="MVP"><br><code>M</code>: Model 数据层，负责网络数据的处理，数据持久化存储和读取等工作<br><br><code>V</code>: View 视图层，负责呈现从数据层传递的数据渲染工作，以及与用户的交互，这里把Controller层也合并到视图层<br><br><code>P</code>: Presenter层，负责视图需要数据的获取，获取到数据后刷新视图。响应View的事件和作为View的代理。</p>
+<p>可以看到 MVP模式跟原始的MVC模式非常相似，完全实现了View与Model层的分离，而且把业务逻辑放在了Presenter层中，视图需要的所有数据都从Presenter获取，而View与 Presenter通过协议进行事件的传递。</p>
+<h4 id="用户的交互逻辑-1"><a href="#用户的交互逻辑-1" class="headerlink" title="用户的交互逻辑"></a>用户的交互逻辑</h4><p>用户点击 View(视图) –&gt; 视图响应事件 –&gt;通过代理传递事件到Presenter–&gt;发起网络请求更新Model–&gt;Model处理完数据–&gt;代理或通知给视图(View或是Controller)–&gt;改变视图样式–&gt;完成</p>
+<h4 id="MVP代码示例"><a href="#MVP代码示例" class="headerlink" title="MVP代码示例"></a>MVP代码示例</h4><p><img src="https://i.loli.net/2021/05/14/RnhykDzO638YPIU.png" alt="项目结构"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">//DemoProtocal</span><br><span class="line">import &lt;Foundation/Foundation.h&gt;</span><br><span class="line"></span><br><span class="line">@protocol DemoProtocal &lt;NSObject&gt;</span><br><span class="line">@optional</span><br><span class="line">//用户点击按钮 触发事件： UI改变传值到model数据改变  UI --- &gt; Model 点击cell 按钮</span><br><span class="line">-(void)didClickCellAddBtnWithIndexPathRow:(NSInteger)index;</span><br><span class="line">//model数据改变传值到UI界面刷新 Model --- &gt; UI</span><br><span class="line">-(void)reloadUI;</span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+<ul>
+<li>我们把所有的代理抽象出来，成为一个Protocal文件。这两个方法的作用：</li>
+<li><code>-(void)didClickCellAddBtnWithIndexPathRow:(NSInteger)index;</code>:Cell视图调用它去Presenter层实现点击逻辑的处理</li>
+<li><code>-(void)reloadUI;</code>: Presenter调用它去更新主视图View或者Controller</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">//Presenter.h</span><br><span class="line">#import &lt;Foundation/Foundation.h&gt;</span><br><span class="line">#import &lt;UIKit/UIKit.h&gt;</span><br><span class="line">#import &quot;DemoProtocal.h&quot;</span><br><span class="line"></span><br><span class="line">NS_ASSUME_NONNULL_BEGIN</span><br><span class="line"></span><br><span class="line">@interface Presenter : NSObject</span><br><span class="line">@property (nonatomic, strong,readonly) NSMutableArray *dataArray;</span><br><span class="line">@property (nonatomic, weak) id&lt;DemoProtocal&gt;delegate;//协议，去更新主视图UI</span><br><span class="line">// 更新 TableView UI 根据需求</span><br><span class="line">- (void)requestDataAndUpdateUI;</span><br><span class="line">//更新 cell UI</span><br><span class="line">- (void)updateCell:(UITableViewCell*)cell withIndex:(NSInteger)index;</span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>dataArray </code>: 视图需要的数据源</li>
+<li><code>- (void)requestDataAndUpdateUI;</code>:主视图Controller调用，去更新自己的UI</li>
+<li><code>- (void)updateCell:(UITableViewCell*)cell withIndex:(NSInteger)index;</code>:更新 Cell的UI</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">//Controller 层</span><br><span class="line">- (void)iniData&#123;</span><br><span class="line">    self.presenter = [[Presenter alloc] init];</span><br><span class="line">    self.presenter.delegate = self;</span><br><span class="line">    [self.presenter requestDataAndUpdateUI];</span><br><span class="line">&#125;</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section&#123;</span><br><span class="line">    return self.presenter.dataArray.count;</span><br><span class="line">&#125;</span><br><span class="line">- (UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath&#123;</span><br><span class="line">    </span><br><span class="line">    MVPTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@&quot;Cell_identifer&quot;];</span><br><span class="line">    if(cell == nil)&#123;</span><br><span class="line">        cell = [[MVPTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@&quot;Cell_identifer&quot;];</span><br><span class="line">    &#125;</span><br><span class="line">    //更新cell UI 数据</span><br><span class="line">    [self.presenter updateCell:cell withIndex:indexPath.row];</span><br><span class="line">    cell.selectionStyle = UITableViewCellSelectionStyleNone;</span><br><span class="line">    return cell;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">#pragma mark - DemoProtocal</span><br><span class="line">//Presenter 的代理回调 数据更新了通知View去更新视图</span><br><span class="line">- (void)reloadUI&#123;</span><br><span class="line">    [self.mainTabelView reloadData];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>Controller层初始化Presenter，调用其方法更新自己的UI，可以看到网络数据的获取，处理都在Presenter中，处理完成后通过协议回调给Controller去reload数据</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">//Cell</span><br><span class="line">- (void)addBtnDown:(UIButton*)btn&#123;</span><br><span class="line">    NSLog(@&quot;%s&quot;,__func__);</span><br><span class="line">    if([self.delegate respondsToSelector:@selector(didClickCellAddBtnWithIndexPathRow:)])&#123;</span><br><span class="line">        [self.delegate didClickCellAddBtnWithIndexPathRow:self.index];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>Cell层点击事件通过协议调用，而这个协议方法的实现是在Presenter中实现的。</li>
+</ul>
+<blockquote>
+<p>MVP模式也有自身的缺点，所有的用户操作和更新UI的回调需要定义，随着交互越来越复杂，这些定义都要有很大一坨代码。逻辑过于复杂的情况下，Present本身也会变得臃肿。所以衍生出了MVVM模式。</p>
+</blockquote>
+<h3 id="3-MVVM-RAC设计模式"><a href="#3-MVVM-RAC设计模式" class="headerlink" title="3.MVVM+RAC设计模式"></a>3.<code>MVVM+RAC</code>设计模式</h3><p><img src="https://i.loli.net/2021/05/14/8dJYU67qnSvBQwf.png" alt="MVVM"><br><br><code>M</code>: Model 数据层，负责网络数据的处理，数据持久化存储和读取等工作<br><br><code>V</code>: View 视图层，此时的视图层包括Controller，负责呈现从数据层传递的数据渲染工作，以及与用户的交互<br><br><code>VM</code>:ViewModel层，负责视图需要数据的获取，获取到数据后刷新视图。响应View的事件和作为View的代理等工作。<br><br>通过架构图可以看到，MVVM模式跟MVP模式基本类似。主要区别是在MVP基础上加入了双向绑定机制。当被绑定对象某个值的变化时，绑定对象会自动感知，无需被绑定对象主动通知绑定对象。可以使用KVO和RAC实现。我们这里采用了RAC的实现方式。关于RAC如果不熟悉的小伙伴可以点<a target="_blank" rel="noopener" href="https://juejin.cn/post/6953808004307222564">这里</a>,我们这篇文章不在涉及。</p>
+<h4 id="MVVM代码示例"><a href="#MVVM代码示例" class="headerlink" title="MVVM代码示例"></a>MVVM代码示例</h4><p><img src="https://i.loli.net/2021/05/14/wkuAR8XNDgU2BSt.png" alt="项目结构">)</p>
+<blockquote>
+<p>我们这里包括两层视图：主视图Controller以及Cell，分别对应两层ViewModel：ViewModel和CellViewModel</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">//ViewModel.h</span><br><span class="line"></span><br><span class="line">@interface ViewModel : NSObject</span><br><span class="line">//发送数据请求的Rac，可以去订阅获取 请求结果</span><br><span class="line">@property (nonatomic,strong,readonly) RACCommand *requestCommand;</span><br><span class="line">@property (nonatomic,strong) NSArray *dataArr;//返回子级对象的ViewModel</span><br><span class="line">- (CellViewModel *)itemViewModelForIndex:(NSInteger)index;</span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>RACCommand *requestCommand</code>:提供供主视图调用的命令，调用它去获取网络数据 </li>
+<li><code>NSArray *dataArr</code>: 提供供主视图使用的数据源，注意这里不能用NSMutableArray，因为NSMutableArray不支持KVO，不能被RACObserve。</li>
+<li><code>- (CellViewModel *)itemViewModelForIndex:(NSInteger)index;</code> 根据Cell的index返回它需要的的ViewModel</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">@interface CellViewModel : NSObject</span><br><span class="line"></span><br><span class="line">@property (nonatomic,copy,readonly) NSString *titleStr;</span><br><span class="line"></span><br><span class="line">@property (nonatomic,copy,readonly) NSString *numStr;</span><br><span class="line"></span><br><span class="line">@property (nonatomic,copy,readonly) RACCommand *addCommand;</span><br><span class="line"></span><br><span class="line">- (instancetype)initWithModel:(DemoModel *)model;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>CellViewModel</code>: 暴露出Cell渲染需要的所有数据</li>
+<li><code>RACCommand *addCommand;</code>: 按钮点击事件的指令，触发后需要在CellViewModel里面做处理。<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">//controller</span><br><span class="line">- (void)iniData&#123;</span><br><span class="line">    self.viewModel = [[ViewModel alloc] init];</span><br><span class="line">    // 发送请求</span><br><span class="line">    RACSignal *signal = [self.viewModel.requestCommand execute:@&#123;@&quot;page&quot;:@&quot;1&quot;&#125;];</span><br><span class="line">    [signal subscribeNext:^(id x) &#123;</span><br><span class="line">        NSLog(@&quot;x=======%@&quot;,x);</span><br><span class="line">        if([x boolValue] == 1)&#123;//请求成功</span><br><span class="line">            [self.mainTabelView reloadData];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;];</span><br><span class="line">&#125;</span><br><span class="line">- (UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath&#123;</span><br><span class="line">    </span><br><span class="line">    MVVMTableVIewCell *cell = [tableView dequeueReusableCellWithIdentifier:@&quot;Cell_identifer&quot;];</span><br><span class="line">    if(cell == nil)&#123;</span><br><span class="line">        cell = [[MVVMTableVIewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@&quot;Cell_identifer&quot;];</span><br><span class="line">    &#125;</span><br><span class="line">    //更新cell UI 数据</span><br><span class="line">    cell.cellViewModel = [self.viewModel itemViewModelForIndex:indexPath.row];</span><br><span class="line">    cell.selectionStyle = UITableViewCellSelectionStyleNone;</span><br><span class="line">        </span><br><span class="line">    return cell;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><code>iniData</code>:初始化ViewModel，并发送请求命令。这里可以监听这个完成信号，进行刷新视图操作</li>
+<li><code>cell.cellViewModel = [self.viewModel itemViewModelForIndex:indexPath.row];</code> 根据主视图的ViewModel去获取Cell的ViewModel，实现cell的数据绑定。</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">//TableViewCell</span><br><span class="line"></span><br><span class="line">    RAC(self.titleLabel,text) = RACObserve(self, cellViewModel.titleStr);</span><br><span class="line">    RAC(self.numLabel,text) = RACObserve(self, cellViewModel.numStr);</span><br><span class="line"></span><br><span class="line">    [[self.addBtn rac_signalForControlEvents:UIControlEventTouchUpInside] subscribeNext:^(id x) &#123;</span><br><span class="line">        NSLog(@&quot;&gt;&gt;&gt;&gt;&gt;&quot;);</span><br><span class="line">        [self.cellViewModel.addCommand execute:nil];</span><br><span class="line">    &#125;];</span><br></pre></td></tr></table></figure>
+<ul>
+<li>在Cell里面进行与ViewModel的数据绑定，这边有个注意Racobserve左边只有self右边才有viewModel.titleStr这样就避Cell重用的问题。</li>
+<li><code>[self.cellViewModel.addCommand execute:nil];</code>:按钮的点击方法触发，事件的处理在CellViewModel中。</li>
+</ul>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><ul>
+<li>经过几十年的发展和演变MVC模式出现了各种各样的变种，并在不同的平台上有着自己的实现。在实际项目开发中，根据具体的业务需求找到适合的架构才是最好的，架构本身并没有好坏之分。</li>
+<li>最后对文中的MVC、MVP、MVVM架构的描述也掺杂了作者的主观意见，如果对文中的内容有疑问，欢迎提出不同的意见进行讨论。</li>
+<li>本文的Demo已上传<a target="_blank" rel="noopener" href="https://github.com/chenXming/MVVMDemo">作者GitHub</a></li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2021/05/17/iOS%E6%9E%B6%E6%9E%84%E6%B5%85%E8%B0%88%E4%BB%8E%20MVC%E3%80%81MVP%20%E5%88%B0%20MVVM/" data-id="cllndjawm000040ex8vij06xm" data-title="iOS-架构浅谈 从 MVC、MVP 到 MVVM" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2021/08/05/Web%E5%BC%80%E5%8F%91%E5%B8%B8%E7%94%A8%E5%B8%83%E5%B1%80%E6%96%B9%E5%BC%8F%E6%80%BB%E7%BB%93/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">前一篇</strong>
+      <div class="article-nav-title">
+        
+          Web开发常用布局方式总结
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2021/04/25/iOS%E6%BB%A4%E9%95%9C%E9%82%A3%E4%BA%9B%E4%BA%8B%E5%84%BF/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">后一篇</strong>
+      <div class="article-nav-title">iOS-滤镜那些事儿</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/10/">十月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">八月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">五月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">四月 2021</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/10/20/%E6%B5%85%E8%B0%88UIView%E7%9A%84%E5%88%B7%E6%96%B0%E4%B8%8E%E7%BB%98%E5%88%B6/">iOS-浅谈UIView的刷新与绘制</a>
+          </li>
+        
+          <li>
+            <a href="/2021/08/13/%E6%B7%B7%E5%90%88%E5%BC%80%E5%8F%91%E5%85%A5%E9%97%A8%20Vue%E7%BB%93%E5%90%88Android:iOS%E5%BC%80%E5%8F%91%E4%BB%BF%E4%BA%AC%E4%B8%9C%E9%A1%B9%E7%9B%AEApp%E5%AD%A6%E4%B9%A0/">混合开发入门 Vue结合Android/iOS开发仿京东项目App</a>
+          </li>
+        
+          <li>
+            <a href="/2021/08/05/Web%E5%BC%80%E5%8F%91%E5%B8%B8%E7%94%A8%E5%B8%83%E5%B1%80%E6%96%B9%E5%BC%8F%E6%80%BB%E7%BB%93/">Web开发常用布局方式总结</a>
+          </li>
+        
+          <li>
+            <a href="/2021/05/17/iOS%E6%9E%B6%E6%9E%84%E6%B5%85%E8%B0%88%E4%BB%8E%20MVC%E3%80%81MVP%20%E5%88%B0%20MVVM/">iOS-架构浅谈 从 MVC、MVP 到 MVVM</a>
+          </li>
+        
+          <li>
+            <a href="/2021/04/25/iOS%E6%BB%A4%E9%95%9C%E9%82%A3%E4%BA%9B%E4%BA%8B%E5%84%BF/">iOS-滤镜那些事儿</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2023 chenXming<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>
